@@ -1,4 +1,4 @@
-﻿#Include <Functor>
+#Include <Functor>
 #Include <CBrowser>
 #Include <CleanNotify>
 #Include <CMsgBox>
@@ -10,7 +10,7 @@
 
 Entry.As("User")
 global pName		:= "로다 플러그인", pVersion := "0.1"
-global jXon			:= JSON.Load(JSON.Get("https://goo.gl/0XhX2x"))
+global jXon		:= JSON.Load(JSON.Get("https://goo.gl/0XhX2x"))
 global __Noti 		:= new CleanNotify(pName, "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin(pName, pVersion)
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
@@ -67,15 +67,15 @@ class LodaPlugin
 {
 	__New(pName := "로다 플러그인", pVer := "") {
 		Gui, new, -DPIScale -Resize -SysMenu +ToolWindow +LastFound
-		this.hPlugin							:= WinExist()
-		this.Bound 							:= []
-		this.Bound.PDMenu 			:= ObjBindMethod(this, "PDMenu")
-		this.Bound.Hover 				:= new this.Thread( ObjBindMethod(this.Hover, "", this.hPlugin) )
-		this.Bound.Parser 				:= new this.Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
+		this.hPlugin			:= WinExist()
+		this.Bound			:= []
+		this.Bound.PDMenu		:= ObjBindMethod(this, "PDMenu")
+		this.Bound.Hover		:= new this.Thread( ObjBindMethod(this.Hover, "", this.hPlugin) )
+		this.Bound.Parser		:= new this.Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
 		this.Parser("New", this.Bound.PDMenu), __Noti := ""
-		this.Bound.OnMessage		:= this.OnMessage.Bind(this)
-		Buttons								:= new this.MenuButtons(this)
-		Menus									:=
+		this.Bound.OnMessage	:= this.OnMessage.Bind(this)
+		Buttons				:= new this.MenuButtons(this)
+		Menus				:=
 		(Join
 		[
 			["채팅창 열기", [
@@ -90,11 +90,11 @@ class LodaPlugin
 			]]
 		]
 		)
-		this.Menus							:= this.CreateMenuBar(Menus)
-		this.hPotPlayer						:= this.DaumPotPlayer.Run(true)
-		this.ThreadID						:= DllCall("GetWindowThreadProcessId", "Ptr", this.DaumPotPlayer.pPotPlayer)
-		this.HookAddr						:= RegisterCallback("HookProc", 0, 3)
-		this.Event								:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
+		this.Menus			:= this.CreateMenuBar(Menus)
+		this.hPotPlayer		:= this.DaumPotPlayer.Run(true)
+		this.ThreadID			:= DllCall("GetWindowThreadProcessId", "Ptr", this.DaumPotPlayer.pPotPlayer)
+		this.HookAddr			:= RegisterCallback("HookProc", 0, 3)
+		this.Event			:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
 		, this.HookAddr, this.DaumPotPlayer.pPotPlayer, this.ThreadID, 0)
 		
 		Menu, MenuBar, Add, % "설정", % ":" . this.Menus[1]
@@ -177,8 +177,8 @@ class LodaPlugin
 				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
 			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
 			
-			this.Parent.Docking 		:= ""
-			this.Parent.ChatMethod 	:= "iexplore.exe"
+			this.Parent.Docking		:= ""
+			this.Parent.ChatMethod	:= "iexplore.exe"
 		}
 		
 		FireFox(ItemName, ItemPos, MenuName) {
@@ -186,8 +186,8 @@ class LodaPlugin
 				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
 			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
 			
-			this.Parent.Docking 		:= ""
-			this.Parent.ChatMethod 	:= "firefox.exe"
+			this.Parent.Docking		:= ""
+			this.Parent.ChatMethod	:= "firefox.exe"
 		}
 		
 		Chrome(ItemName, ItemPos, MenuName) {
@@ -195,8 +195,8 @@ class LodaPlugin
 				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
 			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
 			
-			this.Parent.Docking			 := ""
-			this.Parent.ChatMethod	 := "chrome.exe"
+			this.Parent.Docking		:= ""
+			this.Parent.ChatMethod	:= "chrome.exe"
 		}
 		
 		Docking(ItemName, ItemPos, MenuName) {
@@ -217,8 +217,8 @@ class LodaPlugin
 						try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
 					try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
 					
-					this.Parent.Docking 		:= id
-					this.Parent.ChatMethod 	:= "Docking"
+					this.Parent.Docking		:= id
+					this.Parent.ChatMethod	:= "Docking"
 				}
 			}
 		}
@@ -234,8 +234,8 @@ class LodaPlugin
 	
 	class DaumPotPlayer
 	{
-		static is64 	:= InStr(A_ScriptName, "64") ? "64" : ""
-		, 		isMini 	:= InStr(A_ScriptName, "Mini") ? "Mini" : ""
+		static is64		:= InStr(A_ScriptName, "64") ? "64" : ""
+		, 		isMini	:= InStr(A_ScriptName, "Mini") ? "Mini" : ""
 		
 		FindPath() {
 			RegRead, PotPlayerPath, HKCU, % "SOFTWARE\DAUM\PotPlayer" . this.is64, ProgramFolder
@@ -267,17 +267,17 @@ class LodaPlugin
 	}
 	
 	PDMenu(ItemName, ItemPos, MenuName) {
-		PDName 				:= SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
-		DefaultServer		:= "hi.cdn.livehouse.in"
-		StreamURL 			:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
-		ChatURL 				:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
-		return 					this.Navigator(StreamURL, ChatURL, this.ChatMethod)
+		PDName		:= SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
+		DefaultServer	:= "hi.cdn.livehouse.in"
+		StreamURL		:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
+		ChatURL		:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
+		return		this.Navigator(StreamURL, ChatURL, this.ChatMethod)
 	}
 	
 	Navigator(StreamURL, ChatURL, ChatMethod) {
-		static Interval 	:= 30
-		, isMini 			:= InStr(A_ScriptName, "Mini") ? true : false
-		, is64 				:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
+		static Interval	:= 30
+		, isMini			:= InStr(A_ScriptName, "Mini") ? true : false
+		, is64			:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
 		
 		if WinExist("ahk_class #32770", "주소 열기")
 			WinClose, ahk_class #32770, 주소 열기
@@ -426,12 +426,12 @@ class LodaPlugin
 		}
 		
 		UpdateProgressBar(File) {
-			CurrentSize := FileOpen(File, "r").Length
-			CurrentSizeTick := A_TickCount
-			Speed := Round((CurrentSize/1024-LastSize/1024)/((CurrentSizeTick-LastSizeTick)/1000)) . " Kb/s"
-			LastSizeTick := CurrentSizeTick
-			LastSize := FileOpen(File, "r").Length
-			PercentDone := Round(CurrentSize/FinalSize*100)
+			CurrentSize		:= FileOpen(File, "r").Length
+			CurrentSizeTick	:= A_TickCount
+			Speed			:= Round((CurrentSize/1024-LastSize/1024)/((CurrentSizeTick-LastSizeTick)/1000)) . " Kb/s"
+			LastSizeTick		:= CurrentSizeTick
+			LastSize			:= FileOpen(File, "r").Length
+			PercentDone		:= Round(CurrentSize/FinalSize*100)
 			Progress, %PercentDone%, %PercentDone%`% 완료, 다운로드 중...  (%Speed%), 다운로드 중 %SaveFileAs% (%PercentDone%`%)
 		}
 		
@@ -465,9 +465,9 @@ class LodaPlugin
 				this.CheckSum()
 			}
 			
-			Cut 					:= jXon.parse.Until, LiveHouseIn := "" ;TwitchPD := "", TwitchChannel := "", Twitch := ""
-			poo 					:= JSON.Get("http://poooo.ml/")
-			LiveHouseIn 	:= SubStr(poo, 1, InStr(poo, Cut) - 1), poo := ""
+			Cut			:= jXon.parse.Until, LiveHouseIn := "" ;TwitchPD := "", TwitchChannel := "", Twitch := ""
+			poo			:= JSON.Get("http://poooo.ml/")
+			LiveHouseIn	:= SubStr(poo, 1, InStr(poo, Cut) - 1), poo := ""
 			HTML.Open(), HTML.Write(LiveHouseIn), HTML.Close()
 			
 			pooHash.Item("영화:방송") := HTML.getElementsByClassName("livelist")[0].innerHTML
@@ -483,10 +483,10 @@ class LodaPlugin
 				
 				while HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
 				{
-					PD 					:= HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
-					Banner 			:= HTML.getElementsByClassName("ellipsis")[A_Index-1].innerText
-					MenuName 	:= each
-					ItemName 		:= PD . "`t" . Banner
+					PD		:= HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
+					Banner	:= HTML.getElementsByClassName("ellipsis")[A_Index-1].innerText
+					MenuName	:= each
+					ItemName	:= PD . "`t" . Banner
 					
 					if (Option == "New") {
 						__Noti.Mod("", "확인 중...`n" ItemName)
