@@ -91,7 +91,7 @@ class LodaPlugin
 		]
 		)
 		this.Menus			:= this.CreateMenuBar(Menus)
-		this.hPotPlayer		:= this.DaumPotPlayer.Run(true)
+		this.hPotPlayer			:= this.DaumPotPlayer.Run(true)
 		this.ThreadID			:= DllCall("GetWindowThreadProcessId", "Ptr", this.DaumPotPlayer.pPotPlayer)
 		this.HookAddr			:= RegisterCallback("HookProc", 0, 3)
 		this.Event			:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
@@ -177,7 +177,7 @@ class LodaPlugin
 				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
 			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
 			
-			this.Parent.Docking		:= ""
+			this.Parent.Docking	:= ""
 			this.Parent.ChatMethod	:= "iexplore.exe"
 		}
 		
@@ -186,7 +186,7 @@ class LodaPlugin
 				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
 			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
 			
-			this.Parent.Docking		:= ""
+			this.Parent.Docking	:= ""
 			this.Parent.ChatMethod	:= "firefox.exe"
 		}
 		
@@ -195,7 +195,7 @@ class LodaPlugin
 				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
 			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
 			
-			this.Parent.Docking		:= ""
+			this.Parent.Docking	:= ""
 			this.Parent.ChatMethod	:= "chrome.exe"
 		}
 		
@@ -217,7 +217,7 @@ class LodaPlugin
 						try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
 					try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
 					
-					this.Parent.Docking		:= id
+					this.Parent.Docking	:= id
 					this.Parent.ChatMethod	:= "Docking"
 				}
 			}
@@ -234,8 +234,8 @@ class LodaPlugin
 	
 	class DaumPotPlayer
 	{
-		static is64		:= InStr(A_ScriptName, "64") ? "64" : ""
-		, 		isMini	:= InStr(A_ScriptName, "Mini") ? "Mini" : ""
+		static is64	:= InStr(A_ScriptName, "64") ? "64" : ""
+		, isMini	:= InStr(A_ScriptName, "Mini") ? "Mini" : ""
 		
 		FindPath() {
 			RegRead, PotPlayerPath, HKCU, % "SOFTWARE\DAUM\PotPlayer" . this.is64, ProgramFolder
@@ -269,15 +269,15 @@ class LodaPlugin
 	PDMenu(ItemName, ItemPos, MenuName) {
 		PDName		:= SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
 		DefaultServer	:= "hi.cdn.livehouse.in"
-		StreamURL		:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
+		StreamURL	:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
 		ChatURL		:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
 		return		this.Navigator(StreamURL, ChatURL, this.ChatMethod)
 	}
 	
 	Navigator(StreamURL, ChatURL, ChatMethod) {
 		static Interval	:= 30
-		, isMini			:= InStr(A_ScriptName, "Mini") ? true : false
-		, is64			:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
+		, isMini	:= InStr(A_ScriptName, "Mini") ? true : false
+		, is64		:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
 		
 		if WinExist("ahk_class #32770", "주소 열기")
 			WinClose, ahk_class #32770, 주소 열기
@@ -427,10 +427,10 @@ class LodaPlugin
 		
 		UpdateProgressBar(File) {
 			CurrentSize		:= FileOpen(File, "r").Length
-			CurrentSizeTick	:= A_TickCount
+			CurrentSizeTick		:= A_TickCount
 			Speed			:= Round((CurrentSize/1024-LastSize/1024)/((CurrentSizeTick-LastSizeTick)/1000)) . " Kb/s"
 			LastSizeTick		:= CurrentSizeTick
-			LastSize			:= FileOpen(File, "r").Length
+			LastSize		:= FileOpen(File, "r").Length
 			PercentDone		:= Round(CurrentSize/FinalSize*100)
 			Progress, %PercentDone%, %PercentDone%`% 완료, 다운로드 중...  (%Speed%), 다운로드 중 %SaveFileAs% (%PercentDone%`%)
 		}
@@ -465,8 +465,8 @@ class LodaPlugin
 				this.CheckSum()
 			}
 			
-			Cut			:= jXon.parse.Until, LiveHouseIn := "" ;TwitchPD := "", TwitchChannel := "", Twitch := ""
-			poo			:= JSON.Get("http://poooo.ml/")
+			Cut		:= jXon.parse.Until, LiveHouseIn := "" ;TwitchPD := "", TwitchChannel := "", Twitch := ""
+			poo		:= JSON.Get("http://poooo.ml/")
 			LiveHouseIn	:= SubStr(poo, 1, InStr(poo, Cut) - 1), poo := ""
 			HTML.Open(), HTML.Write(LiveHouseIn), HTML.Close()
 			
@@ -484,7 +484,7 @@ class LodaPlugin
 				while HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
 				{
 					PD		:= HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
-					Banner	:= HTML.getElementsByClassName("ellipsis")[A_Index-1].innerText
+					Banner		:= HTML.getElementsByClassName("ellipsis")[A_Index-1].innerText
 					MenuName	:= each
 					ItemName	:= PD . "`t" . Banner
 					
