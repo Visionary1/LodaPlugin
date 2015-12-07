@@ -10,11 +10,11 @@
 	}
 	
 	else if (Event = EVENT_OBJECT_DESTROY)
-		LodaPlugin.Destruct("ahk_pid " . __Main.DaumPotPlayer.pPotPlayer, __Main) ; need to check since it fires too often
+		LodaPlugin.Destruct("ahk_pid " . __Main.PotPlayer["PID"], __Main) ; need to check since it fires too often
 	
-	else if (Event = EVENT_OBJECT_LOCATIONCHANGE) && (hwnd = __Main.hPotPlayer)
+	else if (Event = EVENT_OBJECT_LOCATIONCHANGE) && (hwnd = __Main.PotPlayer["Hwnd"])
 	{
-		WinGetPos hX, hY, hW, hH, % "ahk_id " . __Main.hPotPlayer
+		WinGetPos hX, hY, hW, hH, % "ahk_id " . __Main.PotPlayer["Hwnd"]
 		WinGetPos cX, cY, cW, cH, % "ahk_id " . __Main.hPlugin
 		
 		DllCall("MoveWindow", "Ptr", __Main.hPlugin, "Int", hX, "Int", hY - 66, "Int", hW, "Int", cH, "Int", true)

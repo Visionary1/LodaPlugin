@@ -1,4 +1,4 @@
-class MsgBox
+﻿class MsgBox
 {
 	static TDCBF_BUTTON 	:= { "확인": 0x01, "예": 0x02, "아니오": 0x04, "취소": 0x08, "다시 시도": 0x10, "닫기": 0x20 }
 	, pnButton 						:= [ "확인", "취소",, "다시 시도",, "예", "아니오", "닫기" ]

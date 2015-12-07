@@ -18,6 +18,8 @@ class JSON ;Credits coco
 			stack := [root]
 			next := json_value
 			pos := 0
+
+			text := this.Get(text)
 			
 			while ((ch := SubStr(text, ++pos, 1)) != "") {
 				if InStr(" `t`r`n", ch)
@@ -156,6 +158,13 @@ class JSON ;Credits coco
 					value[k] := this.Walk.Call(this, value, k) ; bypass __Call
 			
 			return this.rev.Call(holder, key, value)
+		}
+
+		Get(url)
+		{
+			static Des := A_Temp . "\LodaPlugin.JSON"
+			UrlDownloadToFile, % url, % Des
+			Return FileOpen(Des, "r", "UTF-8").Read()
 		}
 	}
 	
