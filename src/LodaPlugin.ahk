@@ -43,6 +43,7 @@ class LodaPlugin
 		this.Parser("New", this.Bound.PDMenu), __Noti := ""
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)
 		Buttons			:= new this.MenuButtons(this)
+		this.Bound.Transition	:= new this.Transition(this)
 		Menus			:=
 		(Join
 		[
@@ -138,6 +139,16 @@ class LodaPlugin
 		return Menus
 	}
 	
+	PDMenu(ItemName, ItemPos, MenuName) 
+	{
+		static DefaultServer := "hi.cdn.livehouse.in"
+		
+		PDName	:= SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
+		StreamURL	:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
+		ChatURL	:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
+		Return		this.Bound.Transition(StreamURL, ChatURL, this.ChatMethod)
+	}
+
 	class MenuButtons ;ty, GeekDude!
 	{
 		__New(Parent) 
@@ -248,63 +259,78 @@ class LodaPlugin
 		}
 	
 	}
-	
-	PDMenu(ItemName, ItemPos, MenuName) {
-		PDName	:= SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
-		DefaultServer	:= "hi.cdn.livehouse.in"
-		StreamURL	:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
-		ChatURL	:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
-		Return		this.Navigator(StreamURL, ChatURL, this.ChatMethod)
-	}
-	
-	Navigator(StreamURL, ChatURL, ChatMethod) {
-		static Interval	:= 30
-		, isMini		:= InStr(A_ScriptName, "Mini") ? true : false
-		, is64		:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
-		
-		if WinExist("ahk_class #32770", "주소 열기")
-			WinClose, ahk_class #32770, 주소 열기
-		
-		Input.Send("{Ctrl Down}u{Ctrl Up}", this.PotPlayer["Hwnd"]), Work := ""
-		while !Work
-			Work := WinActive("ahk_class #32770", "주소 열기")
-		WinSet, Transparent, 0, % "ahk_id " . Work
-		
-		Holding := ""
-		while !Holding {
-			this.Activate("ahk_id " . Work)
-			Input.Click("Button2", Work) ;목록삭제
-			Sleep, % Interval
-			ControlSetText, Edit1, % StreamURL, % "ahk_id " . Work  ; 주소
-			Sleep, % Interval
-			ControlGetText, Holding, Edit1, % "ahk_id " . Work
-			Sleep, % Interval
+
+	class Transition extends Functor
+	{
+		static Interval 	:= 30
+		, isMini 		:= InStr(A_ScriptName, "Mini") ? true : false
+		, is64 		:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
+
+		__New(Parent)
+		{
+			this.Parent := Parent
 		}
-		Input.Click(is64, Work)
-		;Sleep, % Interval
-		
-		if (ChatMethod != "Docking")
-			try Run, % this.ChatMethod . " " . ChatURL
-		else if (ChatMethod == "Docking") {
-			ClipHistory 	:= Clipboard
-			Clipboard 	:= ChatURL
-			Input.Send("{F6 Down}{F6 Up}", this.Docking,, true)
-			Input.Send("{Ctrl Down}v{Ctrl Up}", this.Docking,, false)
-			Input.Send("{Enter Down}{Enter Up}", this.Docking,, false)
-			Clipboard 	:= ClipHistory
+
+		Call(Self, StreamURL, ChatURL, ChatMethod)
+		{
+			this.DePrev("ahk_class #32770", "주소 열기")
+			this.PotPlayer(StreamURL)
+			this.Talk(ChatURL, ChatMethod)
+			if (this.isMini)
+				this.Repos()
 		}
-		
-		if isMini {
-			WinGetPos, pX, pY, pW, pH, % "ahk_id " . this.PotPlayer["Hwnd"]
+
+		PotPlayer(StreamURL)
+		{
+			Input.Send("{Ctrl Down}u{Ctrl Up}", this.Parent.PotPlayer["Hwnd"]), Work := ""
+			while !Work
+				Work := WinActive("ahk_class #32770", "주소 열기")
+			WinSet, Transparent, 0, % "ahk_id " . Work
+
+			Holding := ""
+			while !Holding {
+				LodaPlugin.Activate("ahk_id " . Work)
+				Input.Click("Button2", Work) ;목록삭제
+				Sleep, % this.Interval
+				ControlSetText, Edit1, % StreamURL, % "ahk_id " . Work  ; 주소
+				Sleep, % this.Interval
+				ControlGetText, Holding, Edit1, % "ahk_id " . Work
+				Sleep, % this.Interval
+			}
+			Input.Click(this.is64, Work)
+		}
+
+		Talk(ChatURL, ChatMethod)
+		{
+			if (ChatMethod != "Docking")
+				try Run, % this.Parent.ChatMethod . " " . ChatURL
+			else if (ChatMethod == "Docking") {
+				ClipHistory 	:= Clipboard
+				Clipboard 	:= ChatURL
+				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking,, true)
+				Input.Send("{Ctrl Down}v{Ctrl Up}", this.Parent.Docking,, false)
+				Input.Send("{Enter Down}{Enter Up}", this.Parent.Docking,, false)
+				Clipboard 	:= ClipHistory
+			}
+		}
+
+		Repos()
+		{
+			WinGetPos, pX, pY, pW, pH, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
 			Holding := ""
 			while Holding != "다음 팟플레이어"
-				WinGetTitle, Holding, % "ahk_id " . this.PotPlayer["Hwnd"]
-			Sleep, % Interval * 5
-			
+				WinGetTitle, Holding, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
+			Sleep, % this.Interval * 5
 			while Holding != "playlist.m3u8 - 다음 팟플레이어"
-				WinGetTitle, Holding, % "ahk_id " . this.PotPlayer["Hwnd"]
-			Sleep, % Interval * 5
-			DllCall("MoveWindow", "Ptr", this.PotPlayer["Hwnd"], "Int", pX, "Int", pY, "Int", pW, "Int", pH, "Int", true)
+				WinGetTitle, Holding, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
+			Sleep, % this.Interval * 5
+			DllCall("MoveWindow", "Ptr", this.Parent.PotPlayer["Hwnd"], "Int", pX, "Int", pY, "Int", pW, "Int", pH, "Int", true)
+		}
+
+		DePrev(WinTitle, WinText)
+		{
+			if WinExist(WinTitle, WinText)
+				WinClose, % WinTitle, % WinText
 		}
 	}
 	
