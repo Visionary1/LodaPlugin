@@ -142,7 +142,7 @@ class LodaPlugin
 	PDMenu(ItemName, ItemPos, MenuName) 
 	{
 		static DefaultServer := "hi.cdn.livehouse.in"
-		
+
 		PDName	:= SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
 		StreamURL	:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
 		ChatURL	:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
@@ -239,8 +239,7 @@ class LodaPlugin
 					LodaPlugin.__Delete()
 				}
 				WinWaitActive, % "ahk_pid " . TargetPID
-				dummy := {"Hwnd": WinExist("ahk_pid" . TargetPID), "PID": TargetPID}
-				Return dummy
+				Return {"Hwnd": WinExist("ahk_pid" . TargetPID), "PID": TargetPID}
 			}
 
 			GetPath()
@@ -257,7 +256,6 @@ class LodaPlugin
 				, % "SOFTWARE\DAUM\PotPlayer" . this.isMini . this.is64 . "\Settings", StreamTimeShiftTime, 10
 			}
 		}
-	
 	}
 
 	class Transition extends Functor
