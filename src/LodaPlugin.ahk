@@ -1,4 +1,4 @@
-#Include <Functor>
+﻿#Include <Functor>
 #Include <CBrowser>
 #Include <CleanNotify>
 #Include <CMsgBox>
@@ -10,7 +10,7 @@
 
 Entry.As("User")
 global pName		:= "로다 플러그인", pVersion := "0.1"
-global jXon		:= JSON.Load(JSON.Get("https://goo.gl/0XhX2x"))
+global jXon		:= JSON.Load(JSON.Get("https://goo.gl/7KhJiP"))
 global __Noti 		:= new CleanNotify(pName, "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin(pName, pVersion)
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
@@ -65,7 +65,8 @@ class Entry
 
 class LodaPlugin 
 {
-	__New(pName := "로다 플러그인", pVer := "") {
+	__New(pName := "로다 플러그인", pVer := "") 
+	{
 		Gui, new, -DPIScale -Resize -SysMenu +ToolWindow +LastFound
 		this.hPlugin			:= WinExist()
 		this.Bound			:= []
@@ -454,7 +455,7 @@ class LodaPlugin
 		}
 		
 		Call(Self, Option := "New", MenuBind := "") {
-			static HTML := ComObjCreate("HTMLfile"), pooHash := ComObjCreate("Scripting.Dictionary")
+			static HTML := ComObjCreate("HTMLfile"), pooHash := ComObjCreate("Scripting.Dictionary"), Cut := jXon.parse.Until
 			
 			if (Option == "Refresh") {
 				Gui, Menu
@@ -465,8 +466,7 @@ class LodaPlugin
 				this.CheckSum()
 			}
 			
-			Cut		:= jXon.parse.Until, LiveHouseIn := "" ;TwitchPD := "", TwitchChannel := "", Twitch := ""
-			poo		:= JSON.Get("http://poooo.ml/")
+			poo		:= JSON.Get("http://poooo.ml/"), LiveHouseIn := "" ;TwitchPD := "", TwitchChannel := "", Twitch := ""
 			LiveHouseIn	:= SubStr(poo, 1, InStr(poo, Cut) - 1), poo := ""
 			HTML.Open(), HTML.Write(LiveHouseIn), HTML.Close()
 			

@@ -1,8 +1,8 @@
 class JSON ;Credits coco
 {
-	class Load extends Functor
+	class Load extends JSON.Functor
 	{
-		Call(Self, text, reviver:="") 
+		Call(self, text, reviver:="")
 		{
 			this.rev := IsObject(reviver) ? reviver : false
 			this.keys := this.rev ? {} : false
@@ -37,12 +37,17 @@ class JSON ;Credits coco
 					
 				} else {
 					if InStr("{[", ch) {
+					; Check if Array() is overridden and if its return value has
+					; the 'IsArray' property. If so, Array() will be called normally,
+					; otherwise, use a custom base object for arrays
 						static json_array := Func("Array").IsBuiltIn || ![].IsArray ? {IsArray: true} : 0
 						
+					; sacrifice readability for minor(actually negligible) performance gain
 						(ch == "{")
 						? ( is_key := true
 						, value := {}
 						, next := object_key_or_object_closing )
+						; ch == "["
 						: ( value := json_array ? new json_array : []
 						, next := json_value_or_array_closing )
 						
@@ -73,7 +78,7 @@ class JSON ;Credits coco
 							, value := StrReplace(value,    "\r", "`r")
 							, value := StrReplace(value,    "\t", "`t")
 							
-							pos := i
+							pos := i ; update pos
 							
 							i := 0
 							while (i := InStr(value, "\",, i+1)) {
@@ -93,19 +98,21 @@ class JSON ;Credits coco
 						} else {
 							value := SubStr(text, pos, i := RegExMatch(text, "[\]\},\s]|$",, pos)-pos)
 							
-							static number := "number", null := ""
+							static number := "number", _null := ""
 							if value is %number%
 								value += 0
-							else if (value == "true" || value == "false" || value == "null")
+							else if (value == "true" || value == "false" || value == "_null")
 								value := %value% + 0
 							else
+							; we can do more here to pinpoint the actual culprit
+							; but that's just too much extra work.
 								this.ParseError(next, text, pos, i)
 							
 							pos += i-1
 						}
 						
 						next := holder==root ? "" : is_array ? ",]" : ",}"
-					}
+					} ; If InStr("{[", ch) { ... } else
 					
 					is_array? key := ObjPush(holder, value) : holder[key] := value
 					
@@ -113,7 +120,8 @@ class JSON ;Credits coco
 						this.keys[holder].Push(key)
 				}
 				
-			}
+			} ; while ( ... )
+			
 			return this.rev ? this.Walk(root, "") : root[""]
 		}
 		
@@ -148,6 +156,20 @@ class JSON ;Credits coco
 					value[k] := this.Walk.Call(this, value, k) ; bypass __Call
 			
 			return this.rev.Call(holder, key, value)
+		}
+	}
+	
+	class Functor
+	{
+		__Call(method, args*)
+		{
+		; When casting to Call(), use a new instance of the "function object"
+		; so as to avoid directly storing the properties(used across sub-methods)
+		; into the "function object" itself.
+			if IsObject(method)
+				return (new this).Call(method, args*)
+			else if (method == "")
+				return (new this).Call(args*)
 		}
 	}
 	
