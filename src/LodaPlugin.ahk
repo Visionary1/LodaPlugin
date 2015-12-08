@@ -5,16 +5,17 @@
 #Include <JSON>
 #Include <CInput>
 #Include <CWinEvents>
+#Include, <Win>
 #Include <SetWinEventHook>
 #Include <TVClose>
 #Include <Entry>
 
 Entry.As("User")
-global pName	:= "로다 플러그인", pVersion := "0.1"
-global jXon	:= JSON.Load("https://goo.gl/7KhJiP")
-global __Noti 	:= new CleanNotify(pName, "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
-global __Main	:= new LodaPlugin(pName, pVersion)
-global __GaGa 	:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
+global pVersion		:= "0.1"
+global jXon		:= JSON.Load("https://goo.gl/7KhJiP")
+global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
+global __Main		:= new LodaPlugin()
+global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
 __Main.RegisterCloseCallback(Func("__Destruct"))
 Return
 
@@ -32,13 +33,13 @@ Terminate() {
 
 class LodaPlugin 
 {
-	__New(Title, Version) 
+	__New()
 	{
 		Gui, new, -DPIScale -Resize -SysMenu +ToolWindow +LastFound
 		this.hPlugin		:= WinExist()
 		this.Bound		:= []
 		this.Bound.PDMenu	:= ObjBindMethod(this, "PDMenu")
-		this.Bound.Hover	:= new this.Thread( ObjBindMethod(this.Hover, "", this.hPlugin) )
+		this.Bound.Hover	:= new this.Thread( ObjBindMethod(Win, "Hover", this.hPlugin) )
 		this.Bound.Parser	:= new this.Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
 		this.Parser("New", this.Bound.PDMenu), __Noti := ""
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)
@@ -67,18 +68,18 @@ class LodaPlugin
 		, this.HookAddr, this.PotPlayer["PID"], this.ThreadID, 0)
 		
 		Menu, MenuBar, Add, % "설정", % ":" . this.Menus[1]
-		try Menu, MenuBar, Icon, % "설정", % A_Temp . "\setting.png",, 0
+		this.MenuButtons.Icon("MenuBar", "설정", "setting")
 		for each, Item in {"채팅창 열기": "vote", "실험실": "info", "그리고": "then"}
-			try Menu, % "Loda_0", Icon, % each, % A_Temp . "\" . Item . ".png",, 0
+			this.MenuButtons.Icon("Loda_0", each, Item)
 		for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹하기": "Loda_2"}
-			try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
+			this.MenuButtons.Icon(Item, each, "off")
 		Gui, Menu, MenuBar
 		
 		WinEvents.Register(this.hPlugin, this)
 		for each, Item in [0x0047, 0x200, 0x2A2]
 			OnMessage(Item, this.Bound.OnMessage)
 		WinGetPos, pX, pY,,, % "ahk_id " . this.PotPlayer["Hwnd"]
-		Gui, Show, % "x" pX " y" pY - 71 " w" 430 "h " 15, % Title . " " . Version
+		Gui, Show, % "x" pX " y" pY - 71 " w" 430 "h " 15, % "로다 플러그인 " . pVersion
 		
 		this.Bound.Hover.Start(100)
 		this.Bound.Parser.Start( 60000 * 10 )
@@ -94,7 +95,7 @@ class LodaPlugin
 		static WM_WINDOWPOSCHANGED := 0x0047
 		
 		if (Msg = WM_WINDOWPOSCHANGED) && !WinActive("ahk_id " . this.PotPlayer["Hwnd"]) && !WinActive("가가라이브 채팅") {
-			this.SetTop("ahk_id " . this.PotPlayer["Hwnd"])
+			Win.Top("ahk_id " . this.PotPlayer["Hwnd"])
 			WinGetPos, iX, iY,,, % "ahk_id " . this.hPlugin
 			WinMove, % "ahk_id " . this.PotPlayer["Hwnd"],, % iX, % iY + 66
 		}
@@ -159,8 +160,8 @@ class LodaPlugin
 		IE(ItemName, ItemPos, MenuName) 
 		{
 			for each, Item in {"파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹하기": "Loda_2"}
-				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
-			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
+				this.Icon(Item, each, "off")
+			this.Icon(MenuName, ItemName, "on")
 			
 			this.Parent.Docking		:= ""
 			this.Parent.ChatMethod	:= "iexplore.exe"
@@ -169,8 +170,8 @@ class LodaPlugin
 		FireFox(ItemName, ItemPos, MenuName) 
 		{
 			for each, Item in {"익스플로러 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹하기": "Loda_2"}
-				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
-			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
+				this.Icon(Item, each, "off")
+			this.Icon(MenuName, ItemName, "on")
 			
 			this.Parent.Docking		:= ""
 			this.Parent.ChatMethod	:= "firefox.exe"
@@ -179,8 +180,8 @@ class LodaPlugin
 		Chrome(ItemName, ItemPos, MenuName) 
 		{
 			for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "채팅창 도킹하기": "Loda_2"}
-				try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
-			try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
+				this.Icon(Item, each, "off")
+			this.Icon(MenuName, ItemName, "on")
 			
 			this.Parent.Docking		:= ""
 			this.Parent.ChatMethod	:= "chrome.exe"
@@ -202,8 +203,8 @@ class LodaPlugin
 				IfMsgBox, Yes
 				{
 					for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1"}
-						try Menu, % Item, Icon, % each, % A_Temp . "\off.png",, 0
-					try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
+						this.Icon(Item, each, "off")
+					this.Icon(MenuName, ItemName, "on")
 					
 					this.Parent.Docking		:= id
 					this.Parent.ChatMethod	:= "Docking"
@@ -220,6 +221,15 @@ class LodaPlugin
 		{
 			try Run, http://poooo.ml/
 		}
+
+		class Icon extends Functor
+		{
+			Call(Self, MenuName, ItemName, ico)
+			{
+				try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\" . ico . ".png",, 0
+			}
+		}
+
 	}
 	
 	class DaumPotPlayer
@@ -287,7 +297,7 @@ class LodaPlugin
 
 			Holding := ""
 			while !Holding {
-				LodaPlugin.Activate("ahk_id " . Work)
+				Win.Activate("ahk_id " . Work)
 				Input.Click("Button2", Work) ;목록삭제
 				Sleep, % this.Interval
 				ControlSetText, Edit1, % StreamURL, % "ahk_id " . Work  ; 주소
@@ -361,68 +371,6 @@ class LodaPlugin
 		Destroy() 
 		{
 			SetTimer, % this, Delete
-		}
-	}
-	
-	class Activate extends Functor
-	{
-		Call(Self, hWnd) 
-		{
-			WinActivate, % hWnd
-			WinWaitActive, % hWnd
-		}
-	}
-	
-	class SetTop extends Functor
-	{
-		Call(Self, hWnd) 
-		{
-			WinSet, AlwaysOnTop, On, % hWnd
-			WinSet, AlwaysOnTop, Off, % hWnd
-		}
-	}
-	
-	class WinFade extends Functor ;Credits, JoeDF
-	{
-		Call(Self, w := "", t := 128, i := 1, d := 5) 
-		{
-			t := (t >= 255) ? 255 : (t < 0) ? 0 : t
-			WinGet, s, Transparent, % w
-			s := (s == "") ? 255 : s
-			WinSet,Transparent,% s,% w
-			i := (s<t) ? abs(i) : -1*abs(i)
-			while (k := (i<0) ? (s>t) : (s<t) && WinExist(w)) {
-				WinGet, s, Transparent, % w
-				s+=i
-				WinSet, Transparent, % s, % w
-				Sleep, % d
-			}
-		}
-	}
-	
-	class Hover extends Functor
-	{
-		Call(hWnd)
-		{
-			static Save := true
-
-			MouseGetPos,,, OnWin
-			if ( hWnd = OnWin ) && (Save = false) {
-				Save := !Save
-				LodaPlugin.WinFade("ahk_id " . hWnd, 255, 15)
-			} else if ( hWnd != OnWin ) && (Save != false) {
-				Save := !Save
-				LodaPlugin.WinFade("ahk_id " . hWnd, 145, 5)
-			}
-		}
-	}
-	
-	class Destruct extends Functor
-	{
-		Call(Self, hWnd, Parent) 
-		{
-			if !WinExist(hWnd)
-				Parent.GuiClose()
 		}
 	}
 	
@@ -517,10 +465,10 @@ class LodaPlugin
 					}
 					
 					try Menu, % MenuName, Add, % ItemName, % MenuBind
-					try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\on.png",, 0
+					LodaPlugin.MenuButtons.Icon(MenuName, ItemName, "on")
 				}
 				try Menu, MenuBar, Add, % each, % ":" . each
-				try Menu, MenuBar, Icon, % each, % A_Temp . "\PD.png",, 0
+				LodaPlugin.MenuButtons.Icon("MenuBar", each, "PD")
 			}
 			
 			if (Option == "Refresh") {

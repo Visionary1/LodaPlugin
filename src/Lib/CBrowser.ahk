@@ -3,16 +3,19 @@
 	__New(Title, URL) 
 	{
 		global WB
+
 		Gui, New, +Resize +hwndhThis
-		this.hMain 						:= hThis
-		this.Bound 						:= []
+		this.hMain 	:= hThis
+		this.Bound 	:= []
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)
+
 		Gui, % this.hMain ": Add", ActiveX, x0 y0 w500 h500 hwndhThis vWB, Shell.Explorer
-		this.hEmbed 					:= hThis
-		WB.silent := true, WB.Navigate(URL)
+		this.hEmbed 	:= hThis
+		WB.Silent 	:= True
+		WB.Navigate(URL)
+
 		WinEvents.Register(this.hMain, this)
 		OnMessage(0x100, this.Bound.OnMessage)
-		Gui, % this.hMain . ": Show", % " hide w" A_ScreenWidth*0.3 " h" A_ScreenHeight*0.6 , % Title
 		Gui, % this.hMain . ": Show", % " hide w" A_ScreenWidth*0.3 " h" A_ScreenHeight*0.6 , % Title
 	}
 	

@@ -20,7 +20,7 @@ class CleanNotify
 		
 		this.WinMove(this.hNotify, Pos)
 		WinSet, Region, % " 0-0 w" pnW " h" pnH " R40-40", % "ahk_id " this.hNotify
-		LodaPlugin.WinFade("ahk_id " . this.hNotify, 210, 5)
+		Win.Fade("ahk_id " . this.hNotify, 210, 5)
 		if (WinExist(LastFound))
 			Gui, % LastFound ": Default"
 	}
@@ -35,7 +35,7 @@ class CleanNotify
 	
 	Destroy() 
 	{
-		try LodaPlugin.WinFade("ahk_id " . this.hNotify, 0, 5)
+		try Win.Fade("ahk_id " . this.hNotify, 0, 5)
 		try Gui, % this.hNotify . ": Destroy"
 	}
 	

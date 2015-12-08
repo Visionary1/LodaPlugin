@@ -4,13 +4,13 @@
 	
 	if (Event = EVENT_OBJECT_FOCUS) ; when PotPlayer is activated
 	{
-		LodaPlugin.SetTop("ahk_id " . __Main.hPlugin)
+		Win.Top("ahk_id " . __Main.hPlugin)
 		if WinExist("ahk_id " . __Main.Docking)
-			LodaPlugin.SetTop("ahk_id " . __Main.Docking)
+			Win.Top("ahk_id " . __Main.Docking)
 	}
 	
 	else if (Event = EVENT_OBJECT_DESTROY)
-		LodaPlugin.Destruct("ahk_pid " . __Main.PotPlayer["PID"], __Main) ; need to check since it fires too often
+		Win.Destruct("ahk_pid " . __Main.PotPlayer["PID"], __Main) ; need to check since it fires too often
 	
 	else if (Event = EVENT_OBJECT_LOCATIONCHANGE) && (hwnd = __Main.PotPlayer["Hwnd"])
 	{
