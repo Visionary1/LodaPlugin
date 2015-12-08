@@ -5,7 +5,7 @@
 #Include <JSON>
 #Include <CInput>
 #Include <CWinEvents>
-#Include, <Win>
+#Include <Win>
 #Include <SetWinEventHook>
 #Include <TVClose>
 #Include <Entry>
@@ -38,13 +38,13 @@ class LodaPlugin
 		Gui, new, -DPIScale -Resize -SysMenu +ToolWindow +LastFound
 		this.hPlugin		:= WinExist()
 		this.Bound		:= []
-		this.Bound.PDMenu	:= ObjBindMethod(this, "PDMenu")
+		this.Bound.Transition	:= new this.Transition(this)
+		this.Bound.PDMenu	:= ObjBindMethod(this.PDMenu, this)
 		this.Bound.Hover	:= new this.Thread( ObjBindMethod(Win, "Hover", this.hPlugin) )
 		this.Bound.Parser	:= new this.Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
 		this.Parser("New", this.Bound.PDMenu), __Noti := ""
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)
 		Buttons			:= new this.MenuButtons(this)
-		this.Bound.Transition	:= new this.Transition(this)
 		Menus			:=
 		(Join
 		[
@@ -82,7 +82,7 @@ class LodaPlugin
 		Gui, Show, % "x" pX " y" pY - 71 " w" 430 "h " 15, % "로다 플러그인 " . pVersion
 		
 		this.Bound.Hover.Start(100)
-		this.Bound.Parser.Start( 60000 * 10 )
+		this.Bound.Parser.Start( 60000 * 10 * 2 )
 	}
 	
 	__Delete() 
@@ -137,9 +137,49 @@ class LodaPlugin
 			}
 			Menu, % Menus[1], Add, % Item[1], % Ref
 		}
-		return Menus
+
+		Return Menus
+	}
+
+	class PDMenu extends Functor
+	{
+		Call(Self, ItemName, ItemPos, MenuName) 
+		{
+			PDName := SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
+			if (MenuName == "TwitchMenu")
+				this.Twitch(PDName)
+			else
+				this.LiveHouseIn(PDName)
+
+			Return Self.Bound.Transition(this.StreamURL, this.ChatURL, Self.ChatMethod)
+		}
+
+		LiveHouseIn(PDName)
+		{
+			static DefaultServer := "hi.cdn.livehouse.in"
+			this.StreamURL	:= "http://" . DefaultServer . "/" . jXon.LiveHouseIn[PDName] . "/video/playlist.m3u8"
+			this.ChatURL	:= "https://livehouse.in/en/channel/" . jXon.LiveHouseIn[PDName] . "/chatroom"
+		}
+
+		Twitch(PDName)
+		{
+			PDName 	:= ( jXon.Twitch[PDName] ? jXon.Twitch[PDName] : PDName )
+			api 		:= "http://api.twitch.tv/api/channels/" . PDName . "/access_token"
+			RequestToken 	:= JSON.Load(api)
+			tokenVal 	:= RequestToken.token
+			sigVal 		:= RequestToken.sig
+			dummy	 	= 
+			(LTrim Join
+			http://usher.justin.tv/api/channel/hls/%PDName%.m3u8?
+			token=%tokenVal%
+			&sig=%sigVal%
+			)
+			this.StreamURL := dummy
+			this.ChatURL 	:= "http://www.twitch.tv/" . PDName . "/chat?popout="
+		}
 	}
 	
+	/*
 	PDMenu(ItemName, ItemPos, MenuName) 
 	{
 		static DefaultServer := "hi.cdn.livehouse.in"
@@ -149,6 +189,7 @@ class LodaPlugin
 		ChatURL	:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
 		Return		this.Bound.Transition(StreamURL, ChatURL, this.ChatMethod)
 	}
+	*/
 
 	class MenuButtons ;ty, GeekDude!
 	{
@@ -313,6 +354,7 @@ class LodaPlugin
 			if (ChatMethod != "Docking")
 				try Run, % this.Parent.ChatMethod . " " . ChatURL
 			else if (ChatMethod == "Docking") {
+				Win.Activate("ahk_id " . this.Parent.Docking)
 				ClipHistory 	:= Clipboard
 				Clipboard 	:= ChatURL
 				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking,, true)
@@ -412,7 +454,9 @@ class LodaPlugin
 	
 	class Parser extends Functor
 	{
-		CheckSum() 
+		static HTML := ComObjCreate("HTMLfile"), pooHash := ComObjCreate("Scripting.Dictionary")
+
+		isLatest() 
 		{
 			if ( jXon.parse.pVersion > pVersion ) {
 				MsgBox, 262180, % pName, % jXon.parse.pVersion . " 버전이 존재해요`n최신 버전을 다운받을까요?"
@@ -425,55 +469,108 @@ class LodaPlugin
 		
 		Call(Self, Option := "New", MenuBind := "") 
 		{
-			static HTML := ComObjCreate("HTMLfile"), pooHash := ComObjCreate("Scripting.Dictionary")
-			
 			if (Option == "Refresh") {
 				Gui, Menu
-				for each, Item in ["영화:방송", "애니:방송", "예능:방송", "기타:방송"]
+				for each, Item in ["영화:방송", "애니:방송", "예능:방송", "기타:방송", "TwitchMenu"]
 					try Menu, % Item, Delete,
 				pooHash.RemoveAll()
-			} else if (Option == "New") {
-				this.CheckSum()
-			}
+				} else if (Option == "New") {
+					this.isLatest()
+				}
 
-			Cut 		:= jXon.parse.Until
-			poo 		:= JSON.Get("http://poooo.ml/"), LiveHouseIn := "" ;TwitchPD := "", TwitchChannel := "", Twitch := ""
-			LiveHouseIn 	:= SubStr(poo, 1, InStr(poo, Cut) - 1), poo := ""
+			poo := JSON.Get("http://poooo.ml/")
+			this.LiveHouseIn(poo, MenuBind)
+			this.Twitch(poo, MenuBind)
+			poo := ""
+
+			if (Option == "Refresh") {
+				Gui, Menu, MenuBar
+			}
+		}
+
+		LiveHouseIn(poo, MenuBind)
+		{
+			pooHash := this.pooHash, HTML := this.HTML
+
+			Cut 		:= jXon.parse.Until, LiveHouseIn := ""
+			LiveHouseIn 	:= SubStr(poo, 1, InStr(poo, Cut) - 1)
 			HTML.Open(), HTML.Write(LiveHouseIn), HTML.Close()
-			
+
 			pooHash.Item("영화:방송") := HTML.getElementsByClassName("livelist")[0].innerHTML
 			pooHash.Item("애니:방송") := HTML.getElementsByClassName("livelist")[1].innerHTML
 			pooHash.Item("예능:방송") := HTML.getElementsByClassName("livelist")[2].innerHTML
 			pooHash.Item("기타:방송") := HTML.getElementsByClassName("livelist")[3].innerHTML
-			
+
 			for each in pooHash
 			{
 				HTML.Open()
 				HTML.Write( pooHash.Item(each) )
 				HTML.Close()
-				
+
 				while HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
 				{
 					PD		:= HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
 					Banner		:= HTML.getElementsByClassName("ellipsis")[A_Index-1].innerText
 					MenuName	:= each
 					ItemName	:= PD . "`t" . Banner
-					
-					if (Option == "New") {
+
+					if !(__Noti == "") {
 						__Noti.Mod("", "확인 중...`n" ItemName)
 						Sleep, 50
 					}
-					
+
 					try Menu, % MenuName, Add, % ItemName, % MenuBind
 					LodaPlugin.MenuButtons.Icon(MenuName, ItemName, "on")
 				}
+
 				try Menu, MenuBar, Add, % each, % ":" . each
 				LodaPlugin.MenuButtons.Icon("MenuBar", each, "PD")
 			}
-			
-			if (Option == "Refresh") {
-				Gui, Menu, MenuBar
+		}
+
+		Twitch(poo, MenuBind)
+		{
+			TwitchPDCount := 0, TwitchPD := "", TwitchChannel := ""
+			Cut1 := jXon.parse.Cut1
+			Cut2 := jXon.parse.Cut2
+			HTML := this.HTML
+
+			Twitch := SubStr(poo, InStr(poo, Cut1))
+			Twitch := SubStr(Twitch, 1, InStr(Twitch, Cut2) - 1)
+			HTML.Open(), HTML.Write(Twitch), HTML.Close()
+
+			while HTML.getElementsByClassName("deepblue")[A_Index-1].innerText {
+				Name_Red := HTML.getElementsByClassName("red")[A_Index-1].innerText 
+				Name_Blue := HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
+				TwitchPD .= Name_Red . Name_Blue "`n"
+				TwitchPDCount := A_Index
 			}
+
+			Loop, % TwitchPDCount * 2 {
+				if !( HTML.GetElementsByTagName("a")[A_Index-1].title )
+					continue
+				TwitchChannel .= HTML.GetElementsByTagName("a")[A_Index-1].title "`n" ; 트위치 방송명
+			}
+
+			TwitchPDCount := 0
+			Loop, Parse, TwitchPD, `n, `r
+				PDName%A_Index% := A_LoopField
+
+			Loop, Parse, TwitchChannel, `n, `r {
+				ChannelName%A_Index% := A_LoopField
+				TwitchPDCount := A_Index-1
+			}
+
+			Loop, % TwitchPDCount {
+				PD := PDName%A_Index%
+				Banner := ChannelName%A_index%
+				ItemName := PD . "`t" . Banner
+				Menu, TwitchMenu, Add, % ItemName, % MenuBind
+				LodaPlugin.MenuButtons.Icon("TwitchMenu", ItemName, "on")
+			}
+
+			Menu, MenuBar, Add, 트위치:방송, % ":TwitchMenu"
+			LodaPlugin.MenuButtons.Icon("MenuBar", "트위치:방송", "PD")
 		}
 	}
 }

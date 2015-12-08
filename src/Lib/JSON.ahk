@@ -19,7 +19,8 @@ class JSON ;Credits coco
 			next := json_value
 			pos := 0
 
-			text := this.Get(text)
+			if InStr(text, "http")
+				text := this.Get(text)
 			
 			while ((ch := SubStr(text, ++pos, 1)) != "") {
 				if InStr(" `t`r`n", ch)
