@@ -40,10 +40,11 @@
 		MouseGetPos,,, OnWin
 		if ( hWnd = OnWin ) && (Save = false) {
 			Save := !Save
+			ControlFocus,, % "ahk_id" . Hwnd
 			this.Fade("ahk_id " . hWnd, 255, 15)
 		} else if ( hWnd != OnWin ) && (Save != false) {
 			Save := !Save
-			this.Fade("ahk_id " . hWnd, 145, 5)
+			this.Fade("ahk_id " . hWnd, 125, 5)
 		}
 	}
 }

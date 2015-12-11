@@ -1,5 +1,7 @@
 {
     "LiveHouseIn":{
+        "심청이":"387423",
+        "구리뱅이":"387411",
         "암내공격둘리":"322231",
         "마스터":"328250",
         "푸른용":"318532",
@@ -56,7 +58,7 @@
         "팟수여죽창을들라":"320851",
         "팟수24시":"323587",
         "dramatic1":"317866",
-        "아라라기상":"319279",
+        "아라라기상":"387415",
         "yeori":"318073",
         "Hachi":"317835",
         "히맨":"322345",
@@ -154,6 +156,10 @@
         "Cut1":"트위치_KR",
         "Cut2":"체크 리스트",
         "pVersion":"0.1",
-        "UpdatePath":"http://knowledgeisfree.tistory.com/attachment/cfile5.uf@2175CF3856222F872F7D03.zip"
+        "UpdatePath":"https://goo.gl/eCj0Qv",
+        "Server1":"hi.cdn.livehouse.in",
+        "Server2":"rtctw-rtcp-hi-1.livehouse.in",
+        "Server3":"119.81.135.21",
+        "Server4":"rtcp-sln.livebc.net"
     }
 }

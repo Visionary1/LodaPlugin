@@ -3,7 +3,7 @@
 	__Call(Method, args*)
 	{
 		if IsObject(Method) || (Method == "")
-			return Method ? this.Call(Method, args*) : this.Call(args*)
+			Return Method ? this.Call(Method, args*) : this.Call(args*)
 	}
 }
 /*
