@@ -4,7 +4,7 @@
 	{
 		global WB
 
-		Gui, New, +Resize +hwndhThis
+		Gui, New, % "+Resize +hwndhThis +Owner" . __Main.hPlugin
 		this.hMain 	:= hThis
 		this.Bound 	:= []
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)

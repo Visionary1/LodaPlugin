@@ -189,7 +189,7 @@ class JSON ;Credits coco
 		{
 			static foo := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 			foo.Open("GET", url, Async), foo.Send(), foo.WaitForResponse()
-			return foo.ResponseText
+			Return foo.ResponseText
 		}
 	}
 }
