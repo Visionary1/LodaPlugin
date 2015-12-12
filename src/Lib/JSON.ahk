@@ -2,7 +2,7 @@ class JSON ;Credits coco
 {
 	class Load extends JSON.Functor
 	{
-		Call(self, text, reviver:="")
+		Call(self, text, reviver:="", FromWeb := False)
 		{
 			this.rev := IsObject(reviver) ? reviver : false
 			this.keys := this.rev ? {} : false
@@ -19,7 +19,7 @@ class JSON ;Credits coco
 			next := json_value
 			pos := 0
 
-			if InStr(text, "http")
+			if (FromWeb = True)
 				text := this.Get(text)
 			
 			while ((ch := SubStr(text, ++pos, 1)) != "") {
