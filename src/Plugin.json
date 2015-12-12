@@ -152,6 +152,11 @@
         "하루솔harusol":"harusol",
         "홍차redteahs":"redteahs"
     },
+    "Streamup":{
+        "아라라기상":"koyomi",
+        "하루":"ha-ru",
+        "푸른용":"BLUE-DRAGON"
+    },
     "parse":{
         "Until":"문의/채널/PD님 블로그 신청",
         "Cut1":"트위치_KR",
