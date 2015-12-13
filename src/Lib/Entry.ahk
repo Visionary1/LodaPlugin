@@ -1,4 +1,10 @@
-﻿class Entry
+﻿;@Ahk2Exe-SetName 로다 플러그인
+;@Ahk2Exe-SetDescription 팟플레이어 플러그인
+;@Ahk2Exe-SetVersion 0.1
+;@Ahk2Exe-SetCopyright Copyright (c) 2015`, 로다 &예지력
+;@Ahk2Exe-SetOrigFileName 로다 플러그인
+;@Ahk2Exe-SetCompanyName Copyright (c) 2015`, 로다 &예지력
+class Entry
 {
 	As(Type) 
 	{
@@ -9,7 +15,7 @@
 	
 	Common() 
 	{
-		#NoEnv
+		;#NoEnv ;커스텀 오토핫키에서 Default 설정으로 바꿈
 		#SingleInstance Off
 		SetKeyDelay, 20, 10
 		SetWinDelay, 0

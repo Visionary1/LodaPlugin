@@ -163,12 +163,22 @@ class JSON ;Credits coco
 
 		Get(url)
 		{
-			static Des := A_Temp . "\LodaPlugin.JSON"
+			static Des := A_Temp . "\LodaPlugin\LodaPlugin.JSON"
 			UrlDownloadToFile, % url, % Des
 			Return FileOpen(Des, "r", "UTF-8").Read()
 		}
 	}
 	
+	class Get extends Functor
+	{
+		Call(Self, url, Async := false) 
+		{
+			static foo := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+			foo.Open("GET", url, Async), foo.Send(), foo.WaitForResponse()
+			Return foo.ResponseText
+		}
+	}
+
 	class Functor
 	{
 		__Call(method, args*)
@@ -183,13 +193,4 @@ class JSON ;Credits coco
 		}
 	}
 	
-	class Get extends Functor
-	{
-		Call(Self, url, Async := false) 
-		{
-			static foo := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-			foo.Open("GET", url, Async), foo.Send(), foo.WaitForResponse()
-			Return foo.ResponseText
-		}
-	}
 }

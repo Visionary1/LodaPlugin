@@ -13,8 +13,9 @@
 #Include <Entry>
 
 Entry.As("User")
+global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
 global pVersion		:= "0.1"
-global jXon		:= JSON.Load("https://goo.gl/7KhJiP",, True)
+global jXon			:= JSON.Load("https://goo.gl/7KhJiP",, True)
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin()
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
@@ -38,16 +39,16 @@ class LodaPlugin
 	__New()
 	{
 		Gui, new, -DPIScale -Resize +ToolWindow -SysMenu +LastFound
-		this.hPlugin		:= WinExist()
-		this.Bound		:= []
+		this.hPlugin			:= WinExist()
+		this.Bound				:= []
 		this.Bound.Transition	:= new this.Transition(this)
-		this.Bound.PDMenu	:= ObjBindMethod(this.PDMenu, this)
-		this.Bound.Hover	:= new Thread( ObjBindMethod(Win, "Hover", this.hPlugin) )
-		this.Bound.Parser	:= new Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
+		this.Bound.PDMenu		:= ObjBindMethod(this.PDMenu, this)
+		this.Bound.Hover		:= new Thread( ObjBindMethod(Win, "Hover", this.hPlugin) )
+		this.Bound.Parser		:= new Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
 		this.Parser("New", this.Bound.PDMenu), __Noti := ""
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)
-		Buttons			:= new this.MenuButtons(this)
-		Menus			:=
+		Buttons					:= new this.MenuButtons(this)
+		Menus					:=
 		(Join
 		[
 			["채팅창 열기", [
@@ -63,11 +64,11 @@ class LodaPlugin
 			]], ["About", Buttons.About.Bind(Buttons)]
 		]
 		)
-		this.Menus		:= this.CreateMenuBar(Menus)
-		this.PotPlayer		:= this.DaumPotPlayer.Run()
-		this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"])
-		this.HookAddr		:= RegisterCallback("HookProc", 0, 3)
-		this.Event		:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
+		this.Menus				:= this.CreateMenuBar(Menus)
+		this.PotPlayer			:= this.DaumPotPlayer.Run()
+		this.ThreadID			:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"])
+		this.HookAddr			:= RegisterCallback("HookProc", 0, 3)
+		this.Event				:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
 		, this.HookAddr, this.PotPlayer["PID"], this.ThreadID, 0)
 		
 		Menu, MenuBar, Add, % "설정", % ":" . this.Menus[1]
@@ -176,26 +177,26 @@ class LodaPlugin
 		{
 			PDName 	:= jXon.LiveHouseIn[PDName]
 			If (PDName = "rongsports")
-				this.StreamURL := "https://video-cdn.streamup.com/app/rongsportss-channel/playlist.m3u8"
+				this.StreamURL 		:= "https://video-cdn.streamup.com/app/rongsportss-channel/playlist.m3u8"
 			Else
-				this.StreamURL := "https://video-cdn.streamup.com/app/" . PDName . "s-stream/playlist.m3u8"
-			this.ChatURL 	:= "https://streamup.com/" . PDName . "/embeds/chatonly"
+				this.StreamURL 		:= "https://video-cdn.streamup.com/app/" . PDName . "s-stream/playlist.m3u8"
+			this.ChatURL 			:= "https://streamup.com/" . PDName . "/embeds/chatonly"
 		}
 
 		Twitch(PDName)
 		{
-			PDName 	:= ( jXon.Twitch[PDName] ? jXon.Twitch[PDName] : PDName )
-			api 		:= "http://api.twitch.tv/api/channels/" . PDName . "/access_token"
+			PDName 			:= ( jXon.Twitch[PDName] ? jXon.Twitch[PDName] : PDName )
+			api 			:= "http://api.twitch.tv/api/channels/" . PDName . "/access_token"
 			RequestToken 	:= JSON.Load(api,,True)
-			tokenVal 	:= RequestToken.token
-			sigVal 		:= RequestToken.sig
-			dummy	 	= 
+			tokenVal 		:= RequestToken.token
+			sigVal 			:= RequestToken.sig
+			dummy	 		= 
 			(LTrim Join
 			http://usher.justin.tv/api/channel/hls/%PDName%.m3u8?
 			token=%tokenVal%
 			&sig=%sigVal%
 			)
-			this.StreamURL := dummy
+			this.StreamURL 	:= dummy
 			this.ChatURL 	:= "http://www.twitch.tv/" . PDName . "/chat?popout="
 		}
 	}
@@ -300,8 +301,8 @@ class LodaPlugin
 			)
 			Gui About: New, % "LabelAbout AlwaysOnTop -MinimizeBox Owner" . this.Parent.PotPlayer["Hwnd"]
 			Gui Color, White
-			Gui Font, c00ADEF s20 W700 Q4, Verdana
-			Gui Add, Picture, x10 y10, % A_Temp . "\LodaPlugin.png"
+			Gui Font, c00ADEF s16 W700 Q4, Segoe UI
+			Gui Add, Picture, x10 y10, % A_Temp . "\LodaPlugin\LodaPlugin.png"
 			Gui Add, Text, x70 y6 w210, 로다 플러그인
 			Gui Font
 			Gui Add, Text, x214 y22 Disabled, % "v0.1"
@@ -322,7 +323,7 @@ class LodaPlugin
 		{
 			Call(Self, MenuName, ItemName, ico)
 			{
-				try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\" . ico . ".png",, 0
+				try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\LodaPlugin\" . ico . ".png",, 0
 			}
 		}
 
@@ -333,7 +334,7 @@ class LodaPlugin
 		class Run extends Functor
 		{
 			static is64	:= InStr(A_ScriptName, "64") ? "64" : ""
-			, isMini		:= InStr(A_ScriptName, "Mini") ? "Mini" : ""
+			, isMini	:= InStr(A_ScriptName, "Mini") ? "Mini" : ""
 
 			Call(Self)
 			{
@@ -342,7 +343,7 @@ class LodaPlugin
 				try Run, % this.GetPath() . "\PotPlayer" . this.isMini . this.is64 . ".exe",,, TargetPID
 				catch {
 					MsgBox, 262192, 이런!, 팟플레이어가 설치되지 않은 것 같아요`n설치후에 다시 실행해주세요!, 5
-					LodaPlugin.__Delete()
+					ExitApp
 				}
 				WinWaitActive, % "ahk_pid " . TargetPID
 				Return {"Hwnd": WinExist("ahk_pid" . TargetPID), "PID": TargetPID}
@@ -366,9 +367,9 @@ class LodaPlugin
 
 	class Transition extends Functor
 	{
-		static Interval 	:= 30
-		, isMini 		:= InStr(A_ScriptName, "Mini") ? true : false
-		, is64 		:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
+		static Interval := 30
+		, isMini 		:= InStr(A_ScriptName, "Mini") ? True : False
+		, is64 			:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
 
 		__New(Parent)
 		{
@@ -406,16 +407,16 @@ class LodaPlugin
 
 		Talk(ChatURL, ChatMethod)
 		{
-			if (ChatMethod != "Docking")
+			if (ChatMethod != "Docking") && !(ChatMethod == "")
 				try Run, % this.Parent.ChatMethod . " " . ChatURL
 			else if (ChatMethod == "Docking") {
 				Win.Activate("ahk_id " . this.Parent.Docking)
 				ClipHistory 	:= Clipboard
-				Clipboard 	:= ChatURL
+				Clipboard 		:= ChatURL
 				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking,, True)
 				Input.Send("{Ctrl Down}v{Ctrl Up}", this.Parent.Docking,, False)
 				Input.Send("{Enter Down}{Enter Up}", this.Parent.Docking,, False)
-				Clipboard 	:= ClipHistory
+				Clipboard 		:= ClipHistory
 			}
 		}
 
@@ -429,7 +430,7 @@ class LodaPlugin
 			while Holding != "playlist.m3u8 - 다음 팟플레이어"
 				WinGetTitle, Holding, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
 			Sleep, % this.Interval * 5
-			DllCall("MoveWindow", "Ptr", this.Parent.PotPlayer["Hwnd"], "Int", pX, "Int", pY, "Int", pW, "Int", pH, "Int", True)
+			Resizer.(this.Parent.PotPlayer["Hwnd"], pX, pY, pW, pH)
 		}
 
 		DePrev(WinTitle, WinText)
@@ -460,9 +461,9 @@ class LodaPlugin
 		UpdateProgressBar(File) 
 		{
 			CurrentSize		:= FileOpen(File, "r").Length
-			CurrentSizeTick		:= A_TickCount
+			CurrentSizeTick	:= A_TickCount
 			Speed			:= Round((CurrentSize/1024-LastSize/1024)/((CurrentSizeTick-LastSizeTick)/1000)) . " Kb/s"
-			LastSizeTick		:= CurrentSizeTick
+			LastSizeTick	:= CurrentSizeTick
 			LastSize		:= FileOpen(File, "r").Length
 			PercentDone		:= Round(CurrentSize/FinalSize*100)
 			Progress, %PercentDone%, %PercentDone%`% 완료, 다운로드 중...  (%Speed%), 다운로드 중 %SaveFileAs% (%PercentDone%`%)
@@ -512,9 +513,9 @@ class LodaPlugin
 
 		LiveHouseIn(poo, MenuBind)
 		{
-			pooHash 	:= this.pooHash
-			HTML 		:= this.HTML
-			Cut 		:= jXon.parse.Until
+			pooHash 		:= this.pooHash
+			HTML 			:= this.HTML
+			Cut 			:= jXon.parse.Until
 			LiveHouseIn 	:= SubStr(poo, 1, InStr(poo, Cut) - 1)
 			HTML.Open(), HTML.Write(LiveHouseIn), HTML.Close()
 
@@ -532,7 +533,7 @@ class LodaPlugin
 
 				while HTML.getElementsByClassName("deepblue pull-left")[A_Index-1].innerText
 				{
-					PD		:= HTML.getElementsByClassName("deepblue pull-left")[A_Index-1].innerText
+					PD			:= HTML.getElementsByClassName("deepblue pull-left")[A_Index-1].innerText
 					Banner		:= HTML.getElementsByClassName("ellipsis")[A_Index-1].innerText
 					MenuName	:= each
 					ItemName	:= PD . "`t" . Banner
@@ -587,7 +588,7 @@ class LodaPlugin
 
 			Loop, % TwitchPDCount
 			{
-				PD 		:= PDName%A_Index%
+				PD 			:= PDName%A_Index%
 				Banner 		:= ChannelName%A_index%
 				ItemName 	:= PD . "`t" . Banner
 				try Menu, TwitchMenu, Add, % ItemName, % MenuBind

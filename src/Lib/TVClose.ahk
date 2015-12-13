@@ -8,7 +8,7 @@
 	{
 		y += Step / 2 ; Moving down
 		h -= Step     ; Decreasing height
-		DllCall("MoveWindow", "Ptr", Target, "Int", x, "Int", y, "Int", w, "Int", h, "Int", true)
+		Resizer.(Target, x, y, w, h)
 	}
 	
 	; Decrease Width (keep 3 pixels)
@@ -17,6 +17,6 @@
 	{
 		x += Step / 2 ; Moving right
 		w -= Step     ; Decreasing width
-		DllCall("MoveWindow", "Ptr", Target, "Int", x, "Int", y, "Int", w, "Int", h, "Int", true)
+		Resizer.(Target, x, y, w, h)
 	}
 }
