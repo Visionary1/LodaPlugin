@@ -2,8 +2,7 @@ class CleanNotify
 {
 	__New(Title, Msg, pnW := "700", pnH := "300", Pos := "b r", Time := "10") 
 	{
-		LastFound := WinExist()
-		Gui, new, +hwndhNotify -DPIScale
+		Gui, new, +hwndhNotify -DPIScale +LastFound
 		this.hNotify := hNotify
 		Gui, % this.hNotify ": Default"
 		Gui, % this.hNotify ": +AlwaysOnTop +ToolWindow -SysMenu -Caption +LastFound +E0x20"
@@ -21,8 +20,6 @@ class CleanNotify
 		this.WinMove(this.hNotify, Pos)
 		WinSet, Region, % " 0-0 w" pnW " h" pnH " R40-40", % "ahk_id " this.hNotify
 		Win.Fade("ahk_id " . this.hNotify, 210, 5)
-		if (WinExist(LastFound))
-			Gui, % LastFound ": Default"
 	}
 	
 	Mod(Title, Msg := "") 

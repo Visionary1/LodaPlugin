@@ -45,7 +45,7 @@ class LodaPlugin
 		this.Bound.PDMenu	:= ObjBindMethod(this.PDMenu, this)
 		this.Bound.Hover	:= new Thread( ObjBindMethod(Win, "Hover", this.hPlugin) )
 		this.Bound.Parser	:= new Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
-		this.Parser("New", this.Bound.PDMenu), __Noti := ""
+		this.Parser("New", this.Bound.PDMenu)
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)
 		Buttons			:= new this.MenuButtons(this)
 		Menus			:=
@@ -64,13 +64,7 @@ class LodaPlugin
 			]], ["About", Buttons.About.Bind(Buttons)]
 		]
 		)
-		this.Menus	:= this.CreateMenuBar(Menus)
-		this.PotPlayer	:= this.DaumPotPlayer.Run()
-		this.ThreadID	:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"])
-		this.HookAddr	:= RegisterCallback("HookProc", 0, 3)
-		this.Event	:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
-		, this.HookAddr, this.PotPlayer["PID"], this.ThreadID, 0)
-		
+		this.Menus		:= this.CreateMenuBar(Menus)
 		Menu, MenuBar, Add, % "설정", % ":" . this.Menus[1]
 		this.MenuButtons.Icon("MenuBar", "설정", "setting")
 		for each, Item in {"채팅창 열기": "vote", "라이브하우스 주소": "then", "About": "info"}
@@ -82,8 +76,14 @@ class LodaPlugin
 		Gui, Menu, MenuBar
 		
 		WinEvents.Register(this.hPlugin, this)
-		for each, Item in [0x0047, 0x200, 0x2A2]
+		for each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage)
+		__Noti.Destroy()
+		this.PotPlayer	:= this.DaumPotPlayer.Run()
+		this.ThreadID	:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"])
+		this.HookAddr	:= RegisterCallback("HookProc", 0, 3)
+		this.Event	:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
+		, this.HookAddr, this.PotPlayer["PID"], this.ThreadID, 0)
 		WinGetPos, pX, pY,,, % "ahk_id " . this.PotPlayer["Hwnd"]
 		Gui, Show, % "x" pX " y" pY - 71 " w" 430 "h " 15, % "로다 플러그인 " . pVersion
 		
@@ -114,7 +114,7 @@ class LodaPlugin
 		try WinKill, % "ahk_id " . this.PotPlayer["Hwnd"]
 		try WinKill, % "ahk_id " . this.Docking
 		TVClose(this.hPlugin, 40, 100)
-		for each, Item in [0x0047, 0x200, 0x2A2]
+		for each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage, 0)
 		this.Bound.Hover.Destroy()
 		this.Bound.Parser.Destroy()
@@ -324,6 +324,7 @@ class LodaPlugin
 			Call(Self, MenuName, ItemName, ico)
 			{
 				try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\LodaPlugin\" . ico . ".png",, 0
+				Sleep, 50
 			}
 		}
 
@@ -378,6 +379,14 @@ class LodaPlugin
 
 		Call(Self, StreamURL, ChatURL, ChatMethod)
 		{
+			If !(this.Parent.ChatMethod) {
+				Why := new MsgBox("로다 플러그인", "채팅창 설정이 되지 않았어요"
+				, "지금 설정은 채팅창을 자동으로 열지 않습니다`n`n방송을 입장할까요?`n`n채팅창을 열려면 취소 후 설정-채팅창 열기를 설정하세요"
+				, "예|취소", "YELLOW", this.Parent.PotPlayer["Hwnd"])
+				If (Why == "취소")
+					Return
+			}
+
 			this.DePrev("ahk_class #32770", "주소 열기")
 			this.PotPlayer(StreamURL)
 			this.Talk(ChatURL, ChatMethod)
@@ -580,7 +589,7 @@ class LodaPlugin
 			Loop, Parse, TwitchPD, `n, `r
 				PDName%A_Index% := A_LoopField
 
-			Loop, Parse, TwitchChannel, `n, `r 
+			Loop, Parse, TwitchChannel, `n, `r
 			{
 				ChannelName%A_Index% := A_LoopField
 				TwitchPDCount := A_Index-1
