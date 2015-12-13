@@ -14,7 +14,7 @@
 		SetKeyDelay, 20, 10
 		SetWinDelay, 0
 		SetControlDelay, 0
-		SetBatchLines, -1
+		;SetBatchLines, -1
 		ComObjError(False)
 		Menu, Tray, NoStandard
 		ShowGa := Func("ShowGa"), Terminate := Func("Terminate")

@@ -8,11 +8,13 @@
 #Include <Win>
 #Include <SetWinEventHook>
 #Include <TVClose>
+#Include <Thread>
+#Include <Install>
 #Include <Entry>
 
 Entry.As("User")
 global pVersion		:= "0.1"
-global jXon		:= JSON.Load("https://goo.gl/7KhJiP")
+global jXon		:= JSON.Load("https://goo.gl/7KhJiP",, True)
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin()
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
@@ -35,13 +37,13 @@ class LodaPlugin
 {
 	__New()
 	{
-		Gui, new, -DPIScale -Resize -SysMenu +ToolWindow +LastFound
+		Gui, new, -DPIScale -Resize +ToolWindow -SysMenu +LastFound
 		this.hPlugin		:= WinExist()
 		this.Bound		:= []
 		this.Bound.Transition	:= new this.Transition(this)
 		this.Bound.PDMenu	:= ObjBindMethod(this.PDMenu, this)
-		this.Bound.Hover	:= new this.Thread( ObjBindMethod(Win, "Hover", this.hPlugin) )
-		this.Bound.Parser	:= new this.Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
+		this.Bound.Hover	:= new Thread( ObjBindMethod(Win, "Hover", this.hPlugin) )
+		this.Bound.Parser	:= new Thread( ObjBindMethod(this.Parser, "", "", "Refresh", this.Bound.PDMenu) )
 		this.Parser("New", this.Bound.PDMenu), __Noti := ""
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)
 		Buttons			:= new this.MenuButtons(this)
@@ -51,28 +53,31 @@ class LodaPlugin
 			["채팅창 열기", [
 				["익스플로러 사용", Buttons.IE.Bind(Buttons)],
 				["파이어폭스 사용", Buttons.FireFox.Bind(Buttons)],
-				["크롬 사용", Buttons.Chrome.Bind(Buttons)]
-			]], ["실험실", [
-				["채팅창 도킹하기", Buttons.Docking.Bind(Buttons)]
-			]], ["그리고", [
-				["개발자에게 피드백", Buttons.Feedback.Bind(Buttons)],
-				["POOO 이동", Buttons.goPOOO.Bind(Buttons)]
-			]]
+				["크롬 사용", Buttons.Chrome.Bind(Buttons)],
+				["채팅창 도킹", Buttons.Docking.Bind(Buttons)]
+			]], ["라이브하우스 주소", [
+				["기본", Buttons.ChangeServer.Bind(Buttons)],
+				["주소2", Buttons.ChangeServer.Bind(Buttons)],
+				["주소3", Buttons.ChangeServer.Bind(Buttons)],
+				["주소4", Buttons.ChangeServer.Bind(Buttons)]
+			]], ["About", Buttons.About.Bind(Buttons)]
 		]
 		)
-		this.Menus	:= this.CreateMenuBar(Menus)
-		this.PotPlayer	:= this.DaumPotPlayer.Run()
-		this.ThreadID	:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"])
-		this.HookAddr	:= RegisterCallback("HookProc", 0, 3)
-		this.Event	:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
+		this.Menus		:= this.CreateMenuBar(Menus)
+		this.PotPlayer		:= this.DaumPotPlayer.Run()
+		this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"])
+		this.HookAddr		:= RegisterCallback("HookProc", 0, 3)
+		this.Event		:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
 		, this.HookAddr, this.PotPlayer["PID"], this.ThreadID, 0)
 		
 		Menu, MenuBar, Add, % "설정", % ":" . this.Menus[1]
 		this.MenuButtons.Icon("MenuBar", "설정", "setting")
-		for each, Item in {"채팅창 열기": "vote", "실험실": "info", "그리고": "then"}
+		for each, Item in {"채팅창 열기": "vote", "라이브하우스 주소": "then", "About": "info"}
 			this.MenuButtons.Icon("Loda_0", each, Item)
-		for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹하기": "Loda_2"}
+		for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
 			this.MenuButtons.Icon(Item, each, "off")
+		for each, Item in {"기본": "on", "주소2": "off", "주소3": "off", "주소4": "off"}
+			this.MenuButtons.Icon("Loda_2", each, Item)
 		Gui, Menu, MenuBar
 		
 		WinEvents.Register(this.hPlugin, this)
@@ -94,7 +99,7 @@ class LodaPlugin
 	{
 		static WM_WINDOWPOSCHANGED := 0x0047
 		
-		if (Msg = WM_WINDOWPOSCHANGED) && !WinActive("ahk_id " . this.PotPlayer["Hwnd"]) && !WinActive("가가라이브 채팅") {
+		if (Msg = WM_WINDOWPOSCHANGED) && !WinActive("가가라이브 채팅") && !WinActive("ahk_id " . this.PotPlayer["Hwnd"]) {
 			Win.Top("ahk_id " . this.PotPlayer["Hwnd"])
 			WinGetPos, iX, iY,,, % "ahk_id " . this.hPlugin
 			WinMove, % "ahk_id " . this.PotPlayer["Hwnd"],, % iX, % iY + 66
@@ -133,7 +138,8 @@ class LodaPlugin
 			Ref := Item[2]
 			if IsObject(Ref) && Ref._NewEnum() {
 				SubMenus := this.CreateMenuBar(Ref)
-				Menus.Push(SubMenus*), Ref := ":" . SubMenus[1]
+				Menus.Push(SubMenus*)
+				Ref := ":" . SubMenus[1]
 			}
 			Menu, % Menus[1], Add, % Item[1], % Ref
 		}
@@ -148,24 +154,39 @@ class LodaPlugin
 			PDName := SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
 			if (MenuName == "TwitchMenu")
 				this.Twitch(PDName)
-			else
-				this.LiveHouseIn(PDName)
+			else if (MenuName != "TwitchMenu") {
+				_PDName := jXon.LiveHouseIn[PDName]
+				If _PDName is not Integer
+					this.Streamup(PDName, Self)
+				Else
+					this.LiveHouseIn(PDName, Self)
+			}
 
 			Return Self.Bound.Transition(this.StreamURL, this.ChatURL, Self.ChatMethod)
 		}
 
-		LiveHouseIn(PDName)
+		LiveHouseIn(PDName, Self)
 		{
-			static DefaultServer := "hi.cdn.livehouse.in"
+			DefaultServer 	:= ( Self.ChatServer ? Self.ChatServer : jXon.parse.Server1 )
 			this.StreamURL	:= "http://" . DefaultServer . "/" . jXon.LiveHouseIn[PDName] . "/video/playlist.m3u8"
 			this.ChatURL	:= "https://livehouse.in/en/channel/" . jXon.LiveHouseIn[PDName] . "/chatroom"
+		}
+
+		Streamup(PDName, Self)
+		{
+			PDName 	:= jXon.LiveHouseIn[PDName]
+			If (PDName = "rongsports")
+				this.StreamURL := "https://video-cdn.streamup.com/app/rongsportss-channel/playlist.m3u8"
+			Else
+				this.StreamURL := "https://video-cdn.streamup.com/app/" . PDName . "s-stream/playlist.m3u8"
+			this.ChatURL 	:= "https://streamup.com/" . PDName . "/embeds/chatonly"
 		}
 
 		Twitch(PDName)
 		{
 			PDName 	:= ( jXon.Twitch[PDName] ? jXon.Twitch[PDName] : PDName )
 			api 		:= "http://api.twitch.tv/api/channels/" . PDName . "/access_token"
-			RequestToken 	:= JSON.Load(api)
+			RequestToken 	:= JSON.Load(api,,True)
 			tokenVal 	:= RequestToken.token
 			sigVal 		:= RequestToken.sig
 			dummy	 	= 
@@ -200,7 +221,7 @@ class LodaPlugin
 		
 		IE(ItemName, ItemPos, MenuName) 
 		{
-			for each, Item in {"파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹하기": "Loda_2"}
+			for each, Item in {"파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
 				this.Icon(Item, each, "off")
 			this.Icon(MenuName, ItemName, "on")
 			
@@ -210,7 +231,7 @@ class LodaPlugin
 		
 		FireFox(ItemName, ItemPos, MenuName) 
 		{
-			for each, Item in {"익스플로러 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹하기": "Loda_2"}
+			for each, Item in {"익스플로러 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
 				this.Icon(Item, each, "off")
 			this.Icon(MenuName, ItemName, "on")
 			
@@ -220,7 +241,7 @@ class LodaPlugin
 		
 		Chrome(ItemName, ItemPos, MenuName) 
 		{
-			for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "채팅창 도킹하기": "Loda_2"}
+			for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
 				this.Icon(Item, each, "off")
 			this.Icon(MenuName, ItemName, "on")
 			
@@ -230,7 +251,7 @@ class LodaPlugin
 		
 		Docking(ItemName, ItemPos, MenuName) 
 		{
-			Docker := new MsgBox("도킹", "브라우저를 팟플레이어와 함께 움직이도록", "확인' 후 도킹할 윈도우를 우클릭하세요!", "확인|취소", "GREEN", this.Parent.PotPlayer["Hwnd"])
+			Docker := new MsgBox("로다 플러그인", "채팅창을 팟플레이어와 함께 움직이기", "확인' 후 도킹할 윈도우를 우클릭하세요!", "확인|취소", "GREEN", this.Parent.PotPlayer["Hwnd"])
 			if (Docker == "확인")
 			{
 				while !GetKeyState("RButton", "P") {
@@ -252,15 +273,49 @@ class LodaPlugin
 				}
 			}
 		}
-		
-		Feedback() 
+
+		ChangeServer(ItemName)
 		{
-			try Run, http://knowledgeisfree.tistory.com/guestbook
+			if (ItemName == "기본")
+				this.Parent.ChatServer := jXon.parse.Server1
+			else if (ItemName == "주소2")
+				this.Parent.ChatServer := jXon.parse.Server2 ;220.130.187.73"
+			else if (ItemName == "주소3")
+				this.Parent.ChatServer := jXon.parse.Server3
+			else if (ItemName == "주소4")
+				this.Parent.ChatServer := jXon.parse.Server4 ;106.187.40.237"
+			for each, Item in {"기본": "Loda_2", "주소2": "Loda_2", "주소3": "Loda_2", "주소4": "Loda_2"}
+				this.Icon(Item, each, "off")
+			this.Icon("Loda_2", ItemName, "on")
 		}
-		
-		goPOOO() 
+
+		About()
 		{
-			try Run, http://poooo.ml/
+			__AboutText = 
+			(
+			팟플레이어 애드온
+
+
+			Credits <a href="http://goo.gl/nEVrqs">공대생</a>, <a href="https://goo.gl/nCb07h">RONGSPORTS</a>
+			)
+			Gui About: New, % "LabelAbout AlwaysOnTop -MinimizeBox Owner" . this.Parent.PotPlayer["Hwnd"]
+			Gui Color, White
+			Gui Font, c00ADEF s20 W700 Q4, Verdana
+			Gui Add, Picture, x10 y10, % A_Temp . "\LodaPlugin.png"
+			Gui Add, Text, x70 y6 w210, 로다 플러그인
+			Gui Font
+			Gui Add, Text, x214 y22 Disabled, % "v0.1"
+			Gui Add, Link, x71 y45 w210, % __AboutText
+			Gui Add, Link, x16 y120, <a href="http://goo.gl/Weawli">건의 && 버그리포트</a>
+			Gui Add, Button, gAboutClose x198 y112 w75 h23 Default, 닫기
+			Gui Show, w285 h150, About
+			ControlFocus Button1, About
+			Return
+
+			AboutEscape:
+			AboutClose:
+			Gui About: Destroy
+			Return
 		}
 
 		class Icon extends Functor
@@ -331,7 +386,7 @@ class LodaPlugin
 
 		PotPlayer(StreamURL)
 		{
-			Input.Send("{Ctrl Down}u{Ctrl Up}", this.Parent.PotPlayer["Hwnd"]), Work := ""
+			Input.Send("{Ctrl Down}u{Ctrl Up}", this.Parent.PotPlayer["Hwnd"],, True), Work := ""
 			while !Work
 				Work := WinActive("ahk_class #32770", "주소 열기")
 			WinSet, Transparent, 0, % "ahk_id " . Work
@@ -357,9 +412,9 @@ class LodaPlugin
 				Win.Activate("ahk_id " . this.Parent.Docking)
 				ClipHistory 	:= Clipboard
 				Clipboard 	:= ChatURL
-				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking,, true)
-				Input.Send("{Ctrl Down}v{Ctrl Up}", this.Parent.Docking,, false)
-				Input.Send("{Enter Down}{Enter Up}", this.Parent.Docking,, false)
+				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking,, True)
+				Input.Send("{Ctrl Down}v{Ctrl Up}", this.Parent.Docking,, False)
+				Input.Send("{Enter Down}{Enter Up}", this.Parent.Docking,, False)
 				Clipboard 	:= ClipHistory
 			}
 		}
@@ -374,7 +429,7 @@ class LodaPlugin
 			while Holding != "playlist.m3u8 - 다음 팟플레이어"
 				WinGetTitle, Holding, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
 			Sleep, % this.Interval * 5
-			DllCall("MoveWindow", "Ptr", this.Parent.PotPlayer["Hwnd"], "Int", pX, "Int", pY, "Int", pW, "Int", pH, "Int", true)
+			DllCall("MoveWindow", "Ptr", this.Parent.PotPlayer["Hwnd"], "Int", pX, "Int", pY, "Int", pW, "Int", pH, "Int", True)
 		}
 
 		DePrev(WinTitle, WinText)
@@ -383,57 +438,25 @@ class LodaPlugin
 				WinClose, % WinTitle, % WinText
 		}
 	}
-	
-	class Thread extends Functor
-	{
-		__New(Bind) 
-		{
-			this.Bind := Bind
-		}
-		
-		__Delete() 
-		{
-			this.Bind := ""
-			this.Destroy()
-		}
-		
-		Call() 
-		{
-			this.Bind.Call()
-			if (this.Period < 0)
-				this.Destroy()
-		}
-		
-		Start(Period) 
-		{
-			this.Period := Period
-			SetTimer, % this, % Period
-		}
-		
-		Destroy() 
-		{
-			SetTimer, % this, Delete
-		}
-	}
-	
+
 	Class Download extends Functor ;Credit, Bruttosozialprodukt
 	{
 		Call(Self, UrlToFile, SaveFileAs) 
 		{
 			static WebRequest := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-			
+
 			WebRequest.Open("HEAD", UrlToFile)
 			WebRequest.Send()
 			FinalSize := WebRequest.GetResponseHeader("Content-Length")
 			Progress, H80, , 다운로드 중..., %UrlToFile%
-			Progrs := new LodaPlugin.Thread(ObjBindMethod(this, "UpdateProgressBar", SaveFileAs))
+			Progrs := new Thread(ObjBindMethod(this, "UpdateProgressBar", SaveFileAs))
 			Progrs.Start(100)
 			UrlDownloadToFile, % UrlToFile, % SaveFileAs
 			Progress, Off
 			Progrs.Destroy()
 			this.Complete(SaveFileAs)
 		}
-		
+
 		UpdateProgressBar(File) 
 		{
 			CurrentSize		:= FileOpen(File, "r").Length
@@ -444,7 +467,7 @@ class LodaPlugin
 			PercentDone		:= Round(CurrentSize/FinalSize*100)
 			Progress, %PercentDone%, %PercentDone%`% 완료, 다운로드 중...  (%Speed%), 다운로드 중 %SaveFileAs% (%PercentDone%`%)
 		}
-		
+
 		Complete(File) 
 		{
 			try Run, % File, % A_ScriptDir
@@ -455,17 +478,6 @@ class LodaPlugin
 	class Parser extends Functor
 	{
 		static HTML := ComObjCreate("HTMLfile"), pooHash := ComObjCreate("Scripting.Dictionary")
-
-		isLatest() 
-		{
-			if ( jXon.parse.pVersion > pVersion ) {
-				MsgBox, 262180, % pName, % jXon.parse.pVersion . " 버전이 존재해요`n최신 버전을 다운받을까요?"
-				IfMsgBox, Yes
-				{
-					LodaPlugin.Download( jXon.parse.UpdatePath, "로다 플러그인 " . jXon.parse.pVersion )
-				}
-			}
-		}
 		
 		Call(Self, Option := "New", MenuBind := "") 
 		{
@@ -473,7 +485,7 @@ class LodaPlugin
 				Gui, Menu
 				for each, Item in ["영화:방송", "애니:방송", "예능:방송", "기타:방송", "TwitchMenu"]
 					try Menu, % Item, Delete,
-				pooHash.RemoveAll()
+				this.pooHash.RemoveAll()
 				} else if (Option == "New") {
 					this.isLatest()
 				}
@@ -488,28 +500,39 @@ class LodaPlugin
 			}
 		}
 
+		isLatest() 
+		{
+			if ( jXon.parse.pVersion > pVersion ) {
+				Result := new MsgBox("로다 플러그인", "최신 " jXon.parse.pVersion " 버전이 존재합니다", "업데이트 버전을 내려받을까요?", "예|아니오", "BLUE", __Noti.hNotify)
+				if (Result == "예") {
+					LodaPlugin.Download( jXon.parse.UpdatePath, "로다 플러그인 " . jXon.parse.pVersion . ".zip" )
+				}
+			}
+		}
+
 		LiveHouseIn(poo, MenuBind)
 		{
-			pooHash := this.pooHash, HTML := this.HTML
-
-			Cut 		:= jXon.parse.Until, LiveHouseIn := ""
+			pooHash 	:= this.pooHash
+			HTML 		:= this.HTML
+			Cut 		:= jXon.parse.Until
 			LiveHouseIn 	:= SubStr(poo, 1, InStr(poo, Cut) - 1)
 			HTML.Open(), HTML.Write(LiveHouseIn), HTML.Close()
 
-			pooHash.Item("영화:방송") := HTML.getElementsByClassName("livelist")[0].innerHTML
-			pooHash.Item("애니:방송") := HTML.getElementsByClassName("livelist")[1].innerHTML
-			pooHash.Item("예능:방송") := HTML.getElementsByClassName("livelist")[2].innerHTML
-			pooHash.Item("기타:방송") := HTML.getElementsByClassName("livelist")[3].innerHTML
+			For each, Value in ["영화:방송", "애니:방송", "예능:방송", "기타:방송"]
+			{
+				pooHash.Item(Value) := HTML.getElementsByClassName("livelist")[A_Index-1].innerHTML
+				Sleep, 100
+			}
 
-			for each in pooHash
+			For each in pooHash
 			{
 				HTML.Open()
 				HTML.Write( pooHash.Item(each) )
 				HTML.Close()
 
-				while HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
+				while HTML.getElementsByClassName("deepblue pull-left")[A_Index-1].innerText
 				{
-					PD		:= HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
+					PD		:= HTML.getElementsByClassName("deepblue pull-left")[A_Index-1].innerText
 					Banner		:= HTML.getElementsByClassName("ellipsis")[A_Index-1].innerText
 					MenuName	:= each
 					ItemName	:= PD . "`t" . Banner
@@ -556,21 +579,23 @@ class LodaPlugin
 			Loop, Parse, TwitchPD, `n, `r
 				PDName%A_Index% := A_LoopField
 
-			Loop, Parse, TwitchChannel, `n, `r {
+			Loop, Parse, TwitchChannel, `n, `r 
+			{
 				ChannelName%A_Index% := A_LoopField
 				TwitchPDCount := A_Index-1
 			}
 
-			Loop, % TwitchPDCount {
-				PD := PDName%A_Index%
-				Banner := ChannelName%A_index%
-				ItemName := PD . "`t" . Banner
-				Menu, TwitchMenu, Add, % ItemName, % MenuBind
+			Loop, % TwitchPDCount
+			{
+				PD 		:= PDName%A_Index%
+				Banner 		:= ChannelName%A_index%
+				ItemName 	:= PD . "`t" . Banner
+				try Menu, TwitchMenu, Add, % ItemName, % MenuBind
 				LodaPlugin.MenuButtons.Icon("TwitchMenu", ItemName, "on")
 			}
 
-			Menu, MenuBar, Add, 트위치:방송, % ":TwitchMenu"
-			LodaPlugin.MenuButtons.Icon("MenuBar", "트위치:방송", "PD")
+			try Menu, MenuBar, Add, 트위치:방송, % ":TwitchMenu"
+			LodaPlugin.MenuButtons.Icon("MenuBar", "트위치:방송", "Twitch")
 		}
 	}
 }
