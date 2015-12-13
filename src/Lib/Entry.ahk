@@ -1,6 +1,6 @@
 ﻿;@Ahk2Exe-SetName 로다 플러그인
 ;@Ahk2Exe-SetDescription 팟플레이어 플러그인
-;@Ahk2Exe-SetVersion 0.1
+;@Ahk2Exe-SetVersion 0.1.1
 ;@Ahk2Exe-SetCopyright Copyright (c) 2015`, 로다 &예지력
 ;@Ahk2Exe-SetOrigFileName 로다 플러그인
 ;@Ahk2Exe-SetCompanyName Copyright (c) 2015`, 로다 &예지력

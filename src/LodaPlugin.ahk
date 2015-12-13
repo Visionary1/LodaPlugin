@@ -14,7 +14,7 @@
 
 Entry.As("User")
 global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
-global pVersion		:= "0.1"
+global pVersion		:= "0.1.1"
 global jXon		:= JSON.Load("https://goo.gl/7KhJiP",, True)
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin()
