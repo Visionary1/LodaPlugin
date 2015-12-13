@@ -19,7 +19,7 @@
 
 
 ## Downloads
-- [GitHub](https://github.com/Visionary1/LodaPlugin/raw/master/Package/0.1/%EB%A1%9C%EB%8B%A4%20%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8%200.1.zip) 에서 내려받기
+- [GitHub](https://github.com/Visionary1/LodaPlugin/raw/master/Package/0.1.1/%EB%A1%9C%EB%8B%A4%20%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8.zip) 에서 내려받기
 - [블로그](http://knowledgeisfree.tistory.com/) 에서 내려받기
 
 #### Preference General
