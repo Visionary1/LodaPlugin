@@ -15,6 +15,7 @@
 Entry.As("User")
 global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
 global pVersion		:= "0.1.1"
+global RsrcPath 	:= A_Temp . "\LodaPlugin\"
 global jXon		:= JSON.Load("https://goo.gl/7KhJiP",, True)
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin()
@@ -302,7 +303,7 @@ class LodaPlugin
 			Gui About: New, % "LabelAbout AlwaysOnTop -MinimizeBox Owner" . this.Parent.PotPlayer["Hwnd"]
 			Gui Color, White
 			Gui Font, c00ADEF s16 W700 Q4, Segoe UI
-			Gui Add, Picture, x10 y10, % A_Temp . "\LodaPlugin\LodaPlugin.png"
+			Gui Add, Picture, x10 y10, % RsrcPath . "LodaPlugin.png"
 			Gui Add, Text, x70 y6 w210, 로다 플러그인
 			Gui Font
 			Gui Add, Text, x214 y22 Disabled, % "v0.1"
@@ -323,7 +324,7 @@ class LodaPlugin
 		{
 			Call(Self, MenuName, ItemName, ico)
 			{
-				try Menu, % MenuName, Icon, % ItemName, % A_Temp . "\LodaPlugin\" . ico . ".png",, 0
+				try Menu, % MenuName, Icon, % ItemName, % RsrcPath . ico . ".png",, 0
 				Sleep, 50
 			}
 		}
