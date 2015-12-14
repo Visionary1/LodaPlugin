@@ -1,9 +1,10 @@
 class Input
 {
-	Send(Sends, To, Tick := 50, Focus := true) 
+	Send(Sends, To, Tick := 50, Focus := False) 
 	{
 		if (Focus = true)
-			ControlFocus,, % "ahk_id " . To
+			Win.Activate("ahk_id" . To)
+			;ControlFocus,, % "ahk_id " . To
 		ControlSend, ahk_parent, % Sends, % "ahk_id " . To
 		Sleep,% Tick
 	}

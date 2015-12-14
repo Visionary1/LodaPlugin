@@ -420,7 +420,7 @@ class LodaPlugin
 			if (ChatMethod != "Docking") && !(ChatMethod == "")
 				try Run, % this.Parent.ChatMethod . " " . ChatURL
 			else if (ChatMethod == "Docking") {
-				Win.Activate("ahk_id " . this.Parent.Docking)
+				;Win.Activate("ahk_id " . this.Parent.Docking)
 				ClipHistory 	:= Clipboard
 				Clipboard 	:= ChatURL
 				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking,, True)
@@ -446,7 +446,7 @@ class LodaPlugin
 		DePrev(WinTitle, WinText)
 		{
 			if WinExist(WinTitle, WinText)
-				WinClose, % WinTitle, % WinText
+				WinKill, % WinTitle, % WinText
 		}
 	}
 
