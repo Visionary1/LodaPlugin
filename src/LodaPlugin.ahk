@@ -521,25 +521,27 @@ class LodaPlugin
 			}
 		}
 
+		WriteHTML(Parent, String)
+		{
+			Parent.Open(), Parent.Write(String)
+			Sleep, 500
+			Parent.Close()
+		}
+
 		LiveHouseIn(poo, MenuBind)
 		{
 			pooHash 	:= this.pooHash
 			HTML 		:= this.HTML
 			Cut 		:= jXon.parse.Until
 			LiveHouseIn 	:= SubStr(poo, 1, InStr(poo, Cut) - 1)
-			HTML.Open(), HTML.Write(LiveHouseIn), HTML.Close()
+			this.WriteHTML(HTML, LiveHouseIn)
 
 			For each, Value in ["영화:방송", "애니:방송", "예능:방송", "기타:방송"]
-			{
 				pooHash.Item(Value) := HTML.getElementsByClassName("livelist")[A_Index-1].innerHTML
-				Sleep, 100
-			}
 
 			For each in pooHash
 			{
-				HTML.Open()
-				HTML.Write( pooHash.Item(each) )
-				HTML.Close()
+				this.WriteHTML( HTML, pooHash.Item(each) )
 
 				while HTML.getElementsByClassName("deepblue pull-left")[A_Index-1].innerText
 				{
@@ -571,7 +573,7 @@ class LodaPlugin
 
 			Twitch := SubStr(poo, InStr(poo, Cut1))
 			Twitch := SubStr(Twitch, 1, InStr(Twitch, Cut2) - 1)
-			HTML.Open(), HTML.Write(Twitch), HTML.Close()
+			this.WriteHTML(HTML, Twitch)
 
 			while HTML.getElementsByClassName("deepblue")[A_Index-1].innerText {
 				Name_Red := HTML.getElementsByClassName("red")[A_Index-1].innerText 
