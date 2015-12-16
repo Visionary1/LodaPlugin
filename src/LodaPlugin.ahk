@@ -306,7 +306,7 @@ class LodaPlugin
 			Gui Add, Picture, x10 y10, % RsrcPath . "LodaPlugin.png"
 			Gui Add, Text, x70 y6 w210, 로다 플러그인
 			Gui Font
-			Gui Add, Text, x214 y22 Disabled, % "v0.1"
+			Gui Add, Text, x214 y22 Disabled, % "v" . pVersion
 			Gui Add, Link, x71 y45 w210, % __AboutText
 			Gui Add, Link, x16 y120, <a href="http://goo.gl/Weawli">건의 && 버그리포트</a>
 			Gui Add, Button, gAboutClose x198 y112 w75 h23 Default, 닫기
