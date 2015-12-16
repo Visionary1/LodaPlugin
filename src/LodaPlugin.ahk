@@ -89,7 +89,7 @@ class LodaPlugin
 		Gui, Show, % "x" pX " y" pY - 71 " w" 430 "h " 15, % "로다 플러그인 " . pVersion
 		
 		this.Bound.Hover.Start(100)
-		this.Bound.Parser.Start( 60000 * 10 * 2 )
+		this.Bound.Parser.Start( 10 * 60 * 1000 )
 	}
 	
 	__Delete() 
