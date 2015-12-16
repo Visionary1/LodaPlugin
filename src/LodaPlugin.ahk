@@ -14,7 +14,7 @@
 
 Entry.As("User")
 global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
-global pVersion		:= "0.1.2"
+global pVersion		:= "0.1.3"
 global RsrcPath 	:= A_Temp . "\LodaPlugin\"
 global jXon		:= JSON.Load("https://goo.gl/7KhJiP",, True)
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
@@ -179,6 +179,8 @@ class LodaPlugin
 			PDName 	:= jXon.LiveHouseIn[PDName]
 			If (PDName = "rongsports")
 				this.StreamURL 	:= "https://video-cdn.streamup.com/app/rongsportss-channel/playlist.m3u8"
+			Else If (PDName = "haru-tv")
+				this.StreamURL := "https://video-cdn.streamup.com/app/haru-tv/playlist.m3u8"
 			Else
 				this.StreamURL 	:= "https://video-cdn.streamup.com/app/" . PDName . "s-stream/playlist.m3u8"
 			this.ChatURL 		:= "https://streamup.com/" . PDName . "/embeds/chatonly"
