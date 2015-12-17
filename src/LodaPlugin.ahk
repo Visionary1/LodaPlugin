@@ -158,7 +158,7 @@ class LodaPlugin
 			if (MenuName == "TwitchMenu")
 				this.Twitch(PDName)
 			else if (MenuName != "TwitchMenu") {
-				_PDName := jXon.LiveHouseIn[PDName]
+				_PDName := jXon[PDName]
 				If _PDName is not Integer
 					this.Streamup(PDName, Self)
 				Else
@@ -171,8 +171,8 @@ class LodaPlugin
 		LiveHouseIn(PDName, Self)
 		{
 			DefaultServer 	:= ( Self.ChatServer ? Self.ChatServer : jXon.parse.Server1 )
-			this.StreamURL	:= "http://" . DefaultServer . "/" . jXon.LiveHouseIn[PDName] . "/video/playlist.m3u8"
-			this.ChatURL	:= "https://livehouse.in/en/channel/" . jXon.LiveHouseIn[PDName] . "/chatroom"
+			this.StreamURL	:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
+			this.ChatURL	:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
 		}
 
 		Streamup(PDName, Self)
