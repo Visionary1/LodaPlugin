@@ -14,10 +14,13 @@
 
 Entry.As("User")
 global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
-global pVersion		:= "0.2"
+global pVersion		:= "0.3"
 global RsrcPath 	:= A_Temp . "\LodaPlugin\"
 global jXon		:= JSON.Load("https://goo.gl/z0b7GM",, True)
-global PositionPD 	:= jXon.parse["Position_PD"], PositionTitle := jXon.parse["Position_Title"]
+global ParsePos 	:= {"PD": jXon.parse["Position_PD"]
+			, "Title": jXon.parse["Position_Title"]
+			, "TwitchPos": jXon.parse["Position_Twitch"]
+			, "TwitchPD": jXon.parse["Position_TwitchPD"]}
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin()
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
@@ -53,62 +56,63 @@ class LodaPlugin
 		Menus			:=
 		(Join
 		[
-			["채팅창 열기", [
-				["익스플로러 사용", Buttons.IE.Bind(Buttons)],
-				["파이어폭스 사용", Buttons.FireFox.Bind(Buttons)],
-				["크롬 사용", Buttons.Chrome.Bind(Buttons)],
-				["채팅창 도킹", Buttons.Docking.Bind(Buttons)]
-			]], ["라이브하우스 주소", [
-				["기본", Buttons.ChangeServer.Bind(Buttons)],
-				["주소2", Buttons.ChangeServer.Bind(Buttons)],
-				["주소3", Buttons.ChangeServer.Bind(Buttons)],
-				["주소4", Buttons.ChangeServer.Bind(Buttons)]
-			]], ["About", Buttons.About.Bind(Buttons)]
+		["채팅창 열기", [
+			["익스플로러 사용", Buttons.IE.Bind(Buttons)],
+			["파이어폭스 사용", Buttons.FireFox.Bind(Buttons)],
+			["크롬 사용", Buttons.Chrome.Bind(Buttons)],
+			["채팅창 도킹", Buttons.Docking.Bind(Buttons)]
+		]], ["라이브하우스 주소", [
+			["기본", Buttons.ChangeServer.Bind(Buttons)],
+			["주소2", Buttons.ChangeServer.Bind(Buttons)],
+			["주소3", Buttons.ChangeServer.Bind(Buttons)],
+			["주소4", Buttons.ChangeServer.Bind(Buttons)]
+		]], ["About", Buttons.About.Bind(Buttons)]
 		]
 		)
 		this.Menus		:= this.CreateMenuBar(Menus)
 		Menu, MenuBar, Add, % "설정", % ":" . this.Menus[1]
 		this.MenuButtons.Icon("MenuBar", "설정", "setting")
-		for each, Item in {"채팅창 열기": "vote", "라이브하우스 주소": "then", "About": "info"}
-			this.MenuButtons.Icon("Loda_0", each, Item)
-		for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
-			this.MenuButtons.Icon(Item, each, "off")
-		for each, Item in {"기본": "on", "주소2": "off", "주소3": "off", "주소4": "off"}
-			this.MenuButtons.Icon("Loda_2", each, Item)
+		For Each, Item in {"채팅창 열기": "vote", "라이브하우스 주소": "then", "About": "info"}
+			this.MenuButtons.Icon("Loda_0", Each, Item)
+		For Each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
+			this.MenuButtons.Icon(Item, Each, "off")
+		For Each, Item in {"기본": "on", "주소2": "off", "주소3": "off", "주소4": "off"}
+			this.MenuButtons.Icon("Loda_2", Each, Item)
 		Gui, Menu, MenuBar
-		
+
 		WinEvents.Register(this.hPlugin, this)
-		for each, Item in [0x0047]
+		For Each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage)
 		__Noti.Destroy()
-		this.PotPlayer	:= this.DaumPotPlayer.Run()
-		this.ThreadID	:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"])
-		this.HookAddr	:= RegisterCallback("HookProc", 0, 3)
-		this.Event	:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
-		, this.HookAddr, this.PotPlayer["PID"], this.ThreadID, 0)
+		this.PotPlayer		:= this.DaumPotPlayer.Run()
+		this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"])
+		this.HookAddr		:= RegisterCallback("HookProc", 0, 3)
+		this.Event		:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
+			, this.HookAddr, this.PotPlayer["PID"], this.ThreadID, 0)
 		WinGetPos, pX, pY,,, % "ahk_id " . this.PotPlayer["Hwnd"]
 		Gui, Show, % "x" pX " y" pY - 71 " w" 430 "h " 15, % "로다 플러그인 " . pVersion
-		
+		Win.Activate("ahk_id" . this.hPlugin)
+
 		this.Bound.Hover.Start(100)
 		this.Bound.Parser.Start( 10 * 60 * 1000 )
 	}
-	
+
 	__Delete() 
 	{
 		this.GuiClose()
 	}
-	
+
 	OnMessage(wParam, lParam, Msg, hWnd) 
 	{
 		static WM_WINDOWPOSCHANGED := 0x0047
-		
-		if (Msg = WM_WINDOWPOSCHANGED) && !WinActive("가가라이브 채팅") && !WinActive("ahk_id " . this.PotPlayer["Hwnd"]) {
+
+		If (Msg = WM_WINDOWPOSCHANGED) && !WinActive("가가라이브 채팅") && !WinActive("ahk_id " . this.PotPlayer["Hwnd"]) {
 			Win.Top("ahk_id " . this.PotPlayer["Hwnd"])
 			WinGetPos, iX, iY,,, % "ahk_id " . this.hPlugin
 			WinMove, % "ahk_id " . this.PotPlayer["Hwnd"],, % iX, % iY + 66
 		}
 	}
-	
+
 	GuiClose()
 	{
 		Critical
@@ -116,7 +120,7 @@ class LodaPlugin
 		try WinKill, % "ahk_id " . this.PotPlayer["Hwnd"]
 		try WinKill, % "ahk_id " . this.Docking
 		TVClose(this.hPlugin, 40, 100)
-		for each, Item in [0x0047]
+		For Each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage, 0)
 		this.Bound.Hover.Destroy()
 		this.Bound.Parser.Destroy()
@@ -126,25 +130,25 @@ class LodaPlugin
 		DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
 		this.CloseCallback()
 	}
-	
+
 	RegisterCloseCallback(CloseCallback) 
 	{
 		this.CloseCallback := CloseCallback
 	}
-	
+
 	CreateMenuBar(Menu) ; ty, GeekDude
 	{
 		static MenuName := 0
 		Menus := ["Loda_" . MenuName++]
-		for each, Item in Menu
+		For Each, Item in Menu
 		{
 			Ref := Item[2]
-			if IsObject(Ref) && Ref._NewEnum() {
+			If IsObject(Ref) && Ref._NewEnum() {
 				SubMenus := this.CreateMenuBar(Ref)
 				Menus.Push(SubMenus*)
 				Ref := ":" . SubMenus[1]
 			}
-			Menu, % Menus[1], Add, % Item[1], % Ref
+			try Menu, % Menus[1], Add, % Item[1], % Ref
 		}
 
 		Return Menus
@@ -155,10 +159,12 @@ class LodaPlugin
 		Call(Self, ItemName, ItemPos, MenuName) 
 		{
 			PDName := SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
-			if (MenuName == "TwitchMenu")
+
+			If (MenuName == "TwitchMenu")
 				this.Twitch(PDName)
-			else if (MenuName != "TwitchMenu") {
+			Else If (MenuName != "TwitchMenu") {
 				_PDName := jXon[PDName]
+
 				If _PDName is not Integer
 					this.Streamup(PDName, Self)
 				Else
@@ -177,16 +183,6 @@ class LodaPlugin
 
 		Streamup(PDName, Self)
 		{
-			/*
-			PDName 	:= jXon.LiveHouseIn[PDName]
-			If (PDName = "rongsports")
-				this.StreamURL 	:= "https://video-cdn.streamup.com/app/rongsportss-channel/playlist.m3u8"
-			Else If (PDName = "haru-tv")
-				this.StreamURL := "https://video-cdn.streamup.com/app/haru-tv/playlist.m3u8"
-			Else
-				this.StreamURL 	:= "https://video-cdn.streamup.com/app/" . PDName . "s-stream/playlist.m3u8"
-			this.ChatURL 		:= "https://streamup.com/" . PDName . "/embeds/chatonly"
-			*/
 			this.StreamURL 	:= jXon[PDName]["m3u8"]
 			this.ChatURL 	:= jXon[PDName]["chat"]
 		}
@@ -200,26 +196,14 @@ class LodaPlugin
 			sigVal 		:= RequestToken.sig
 			dummy	 	= 
 			(LTrim Join
-			http://usher.justin.tv/api/channel/hls/%PDName%.m3u8?
-			token=%tokenVal%
-			&sig=%sigVal%
+				http://usher.justin.tv/api/channel/hls/%PDName%.m3u8?
+				token=%tokenVal%
+				&sig=%sigVal%
 			)
 			this.StreamURL 	:= dummy
 			this.ChatURL 	:= "http://www.twitch.tv/" . PDName . "/chat?popout="
 		}
 	}
-	
-	/*
-	PDMenu(ItemName, ItemPos, MenuName) 
-	{
-		static DefaultServer := "hi.cdn.livehouse.in"
-
-		PDName	:= SubStr(SubStr(ItemName, 1, InStr(ItemName, "`t")), 1, -1)
-		StreamURL	:= "http://" . DefaultServer . "/" . jXon[PDName] . "/video/playlist.m3u8"
-		ChatURL	:= "https://livehouse.in/en/channel/" . jXon[PDName] . "/chatroom"
-		Return		this.Bound.Transition(StreamURL, ChatURL, this.ChatMethod)
-	}
-	*/
 
 	class MenuButtons ;ty, GeekDude!
 	{
@@ -230,8 +214,8 @@ class LodaPlugin
 		
 		IE(ItemName, ItemPos, MenuName) 
 		{
-			for each, Item in {"파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
-				this.Icon(Item, each, "off")
+			For Each, Item in {"파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
+				this.Icon(Item, Each, "off")
 			this.Icon(MenuName, ItemName, "on")
 			
 			this.Parent.Docking	:= ""
@@ -240,8 +224,8 @@ class LodaPlugin
 		
 		FireFox(ItemName, ItemPos, MenuName) 
 		{
-			for each, Item in {"익스플로러 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
-				this.Icon(Item, each, "off")
+			For Each, Item in {"익스플로러 사용": "Loda_1", "크롬 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
+				this.Icon(Item, Each, "off")
 			this.Icon(MenuName, ItemName, "on")
 			
 			this.Parent.Docking	:= ""
@@ -250,8 +234,8 @@ class LodaPlugin
 		
 		Chrome(ItemName, ItemPos, MenuName) 
 		{
-			for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
-				this.Icon(Item, each, "off")
+			For Each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "채팅창 도킹": "Loda_1"}
+				this.Icon(Item, Each, "off")
 			this.Icon(MenuName, ItemName, "on")
 			
 			this.Parent.Docking	:= ""
@@ -261,9 +245,9 @@ class LodaPlugin
 		Docking(ItemName, ItemPos, MenuName) 
 		{
 			Docker := new MsgBox("로다 플러그인", "채팅창을 팟플레이어와 함께 움직이기", "확인' 후 도킹할 윈도우를 우클릭하세요!", "확인|취소", "GREEN", this.Parent.PotPlayer["Hwnd"])
-			if (Docker == "확인")
+			If (Docker == "확인")
 			{
-				while !GetKeyState("RButton", "P") {
+				While !GetKeyState("RButton", "P") {
 					MouseGetPos, , , id, control
 					WinGetTitle, title, ahk_id %id%
 					ToolTip, %title%`n`n이 윈도우를 도킹하려면 우클릭 하세요!
@@ -273,8 +257,8 @@ class LodaPlugin
 				MsgBox, 262180, Dock, %title%`n`n윈도우를 도킹할까요?
 				IfMsgBox, Yes
 				{
-					for each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1"}
-						this.Icon(Item, each, "off")
+					For Each, Item in {"익스플로러 사용": "Loda_1", "파이어폭스 사용": "Loda_1", "크롬 사용": "Loda_1"}
+						this.Icon(Item, Each, "off")
 					this.Icon(MenuName, ItemName, "on")
 					
 					this.Parent.Docking	:= id
@@ -285,15 +269,15 @@ class LodaPlugin
 
 		ChangeServer(ItemName)
 		{
-			if (ItemName == "기본")
+			If (ItemName == "기본")
 				this.Parent.ChatServer := jXon.parse.Server1
-			else if (ItemName == "주소2")
+			Else If (ItemName == "주소2")
 				this.Parent.ChatServer := jXon.parse.Server2 ;220.130.187.73"
-			else if (ItemName == "주소3")
+			Else If (ItemName == "주소3")
 				this.Parent.ChatServer := jXon.parse.Server3
-			else if (ItemName == "주소4")
+			Else If (ItemName == "주소4")
 				this.Parent.ChatServer := jXon.parse.Server4 ;106.187.40.237"
-			for each, Item in {"기본": "Loda_2", "주소2": "Loda_2", "주소3": "Loda_2", "주소4": "Loda_2"}
+			For each, Item in {"기본": "Loda_2", "주소2": "Loda_2", "주소3": "Loda_2", "주소4": "Loda_2"}
 				this.Icon(Item, each, "off")
 			this.Icon("Loda_2", ItemName, "on")
 		}
@@ -302,10 +286,10 @@ class LodaPlugin
 		{
 			__AboutText = 
 			(
-			팟플레이어 애드온
+				팟플레이어 애드온
 
 
-			Credits <a href="http://goo.gl/nEVrqs">공대생</a>, <a href="https://goo.gl/nCb07h">RONGSPORTS</a>
+				Credits <a href="http://goo.gl/nEVrqs">공대생</a>, <a href="https://goo.gl/nCb07h">RONGSPORTS</a>
 			)
 			Gui About: New, % "LabelAbout AlwaysOnTop -MinimizeBox Owner" . this.Parent.PotPlayer["Hwnd"]
 			Gui Color, White
@@ -337,7 +321,7 @@ class LodaPlugin
 		}
 
 	}
-	
+
 	class DaumPotPlayer
 	{
 		class Run extends Functor
@@ -389,28 +373,28 @@ class LodaPlugin
 		{
 			If !(this.Parent.ChatMethod) {
 				Why := new MsgBox("로다 플러그인", "채팅창 설정이 되지 않았어요"
-				, "지금 설정은 채팅창을 자동으로 열지 않습니다`n`n방송을 입장할까요?`n`n채팅창을 열려면 취소 후 설정-채팅창 열기를 설정하세요"
-				, "예|취소", "YELLOW", this.Parent.PotPlayer["Hwnd"])
+					, "지금 설정은 채팅창을 자동으로 열지 않습니다`n`n방송을 입장할까요?`n`n채팅창을 열려면 취소 후 설정-채팅창 열기를 설정하세요"
+					, "예|취소", "YELLOW", this.Parent.PotPlayer["Hwnd"])
 				If (Why == "취소")
-					Return
+				Return
 			}
 
 			this.DePrev("ahk_class #32770", "주소 열기")
 			this.PotPlayer(StreamURL)
 			this.Talk(ChatURL, ChatMethod)
-			if (this.isMini)
+			If (this.isMini)
 				this.Repos()
 		}
 
 		PotPlayer(StreamURL)
 		{
 			Input.Send("{Ctrl Down}u{Ctrl Up}", this.Parent.PotPlayer["Hwnd"],, True), Work := ""
-			while !Work
+			While !Work
 				Work := WinActive("ahk_class #32770", "주소 열기")
 			WinSet, Transparent, 0, % "ahk_id " . Work
 
 			Holding := ""
-			while !Holding {
+			While !Holding {
 				Win.Activate("ahk_id " . Work)
 				Input.Click("Button2", Work) ;목록삭제
 				Sleep, % this.Interval
@@ -424,10 +408,9 @@ class LodaPlugin
 
 		Talk(ChatURL, ChatMethod)
 		{
-			if (ChatMethod != "Docking") && !(ChatMethod == "")
-				try Run, % this.Parent.ChatMethod . " " . ChatURL
-			else if (ChatMethod == "Docking") {
-				;Win.Activate("ahk_id " . this.Parent.Docking)
+			If (ChatMethod != "Docking") && !(ChatMethod == "")
+			try Run, % this.Parent.ChatMethod . " " . ChatURL
+			Else If (ChatMethod == "Docking") {
 				ClipHistory 	:= Clipboard
 				Clipboard 	:= ChatURL
 				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking,, True)
@@ -440,19 +423,19 @@ class LodaPlugin
 		Repos()
 		{
 			WinGetPos, pX, pY, pW, pH, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
-			Holding := ""
-			while Holding != "다음 팟플레이어"
-				WinGetTitle, Holding, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
-			Sleep, % this.Interval * 5
-			while Holding != "playlist.m3u8 - 다음 팟플레이어"
-				WinGetTitle, Holding, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
-			Sleep, % this.Interval * 5
+			For Key, Value in ["다음 팟플레이어", "playlist.m3u8 - 다음 팟플레이어"]
+			{
+				Holding := ""
+				While, Holding != Value
+					WinGetTitle, Holding, % "ahk_id " . this.Parent.PotPlayer["Hwnd"]
+				Sleep, % this.Interval * 5
+			}
 			Resizer.(this.Parent.PotPlayer["Hwnd"], pX, pY, pW, pH)
 		}
 
 		DePrev(WinTitle, WinText)
 		{
-			if WinExist(WinTitle, WinText)
+			If WinExist(WinTitle, WinText)
 				WinKill, % WinTitle, % WinText
 		}
 	}
@@ -488,134 +471,127 @@ class LodaPlugin
 
 		Complete(File) 
 		{
-			try Run, % File, % A_ScriptDir
+			try Run, % A_ScriptDir . "\" . File
 			ExitApp
 		}
 	}
-	
+
 	class Parser extends Functor
 	{
-		static HTML := ComObjCreate("HTMLfile"), pooHash := ComObjCreate("Scripting.Dictionary")
-		
-		Call(Self, Option := "New", MenuBind := "") 
+		static HTML := ComObjCreate("HTMLfile") ;pooHash := ComObjCreate("Scripting.Dictionary")
+
+		Call(Self, Option := "New", MenuBind := "")
 		{
 			if (Option == "Refresh") {
 				Gui, Menu
-				for each, Item in ["영화:방송", "애니:방송", "예능:방송", "기타:방송", "TwitchMenu"]
+				For each, Item in ["영화:방송", "애니:방송", "예능:방송", "기타:방송", "TwitchMenu"]
 					try Menu, % Item, Delete,
-				this.pooHash.RemoveAll()
-				} else if (Option == "New") {
+				} Else If (Option == "New") {
 					this.isLatest()
 				}
 
-			poo := JSON.Get("http://poooo.ml/")
-			this.LiveHouseIn(poo, MenuBind)
-			this.Twitch(poo, MenuBind)
-			poo := ""
+				poo := this.DOM("http://poooo.ml/")
+				this.LiveHouseIn(poo, MenuBind)
+				this.Twitch(poo, MenuBind)
+				poo.Quit(), poo := ""
 
-			if (Option == "Refresh") {
-				Gui, Menu, MenuBar
-			}
-		}
-
-		isLatest() 
-		{
-			if ( jXon.parse.pVersion > pVersion ) {
-				Result := new MsgBox("로다 플러그인", "최신 " jXon.parse.pVersion " 버전이 존재합니다", "업데이트 버전을 내려받을까요?", "예|아니오", "BLUE", __Noti.hNotify)
-				if (Result == "예") {
-					LodaPlugin.Download( jXon.parse.UpdatePath, "로다 플러그인 " . jXon.parse.pVersion . ".zip" )
+				if (Option == "Refresh") {
+					Gui, Menu, MenuBar
 				}
 			}
-		}
 
-		WriteHTML(Parent, String)
-		{
-			Parent.Open(), Parent.Write(String)
-			Sleep, 500
-			Parent.Close()
-		}
-
-		LiveHouseIn(poo, MenuBind)
-		{
-			pooHash 	:= this.pooHash
-			HTML 		:= this.HTML
-			Cut 		:= jXon.parse.Until
-			LiveHouseIn 	:= SubStr(poo, 1, InStr(poo, Cut) - 1)
-			this.WriteHTML(HTML, LiveHouseIn)
-
-			For each, Value in ["영화:방송", "애니:방송", "예능:방송", "기타:방송"]
-				pooHash.Item(Value) := HTML.getElementsByClassName("livelist")[A_Index-1].innerHTML
-
-			For each in pooHash
+			DOM(url, isVisible := False)
 			{
-				this.WriteHTML( HTML, pooHash.Item(each) )
+				Obj := ComObjCreate("InternetExplorer.Application"), Obj.Visible := isVisible, Obj.Navigate(url)
+				While Obj.readyState != 4 || Obj.document.readyState != "complete"
+					Sleep, 30
 
-				while HTML.getElementsByClassName(PositionPD)[A_Index-1].innerText
+				Return Obj
+			}
+
+			isLatest() 
+			{
+				If ( jXon.parse.pVersion > pVersion ) {
+					Result := new MsgBox("로다 플러그인", "최신 " jXon.parse.pVersion " 버전이 존재합니다", "업데이트 버전을 내려받을까요?", "예|아니오", "BLUE", __Noti.hNotify)
+					If (Result == "예") {
+						LodaPlugin.Download( jXon.parse.UpdatePath, "로다 플러그인 " . jXon.parse.pVersion . ".zip" )
+					}
+				}
+			}
+
+			LiveHouseIn(poo, MenuBind)
+			{
+				static Selector := {1: "영화:방송", 2: "애니:방송", 3: "예능:방송", 4: "기타:방송"}
+
+				Packet := {}
+				Loop, 4
+					Packet[A_Index] := poo.document.getElementsByClassName("livelist")[A_Index-1]
+
+				For Key, Value in Packet
 				{
-					PD		:= HTML.getElementsByClassName(PositionPD)[A_Index-1].innerText
-					Banner		:= HTML.getElementsByClassName(PositionTitle)[A_Index-1].innerText
-					MenuName	:= each
-					ItemName	:= PD . "`t" . Banner
+					MenuName 	:= Selector[Key]
+					Now 		:= Packet[A_Index]
 
-					if !(__Noti == "") {
-						__Noti.Mod("", "확인 중...`n" ItemName)
-						Sleep, 50
+					While Now.getElementsByClassName(ParsePos["PD"])[A_Index-1].innerText
+					{
+						PD 		:= Now.getElementsByClassName(ParsePos["PD"])[A_Index-1].innerText
+						Title 		:= Now.getElementsByClassName(ParsePos["Title"])[A_Index-1].innerText
+						ItemName 	:= PD . "`t" . Title
+
+						if !(__Noti == "") {
+							__Noti.Mod("", "확인 중...`n" ItemName)
+							Sleep, 50
+						}
+
+						try Menu, % MenuName, Add, % ItemName, % MenuBind
+						LodaPlugin.MenuButtons.Icon(MenuName, ItemName, "on")
 					}
 
-					try Menu, % MenuName, Add, % ItemName, % MenuBind
-					LodaPlugin.MenuButtons.Icon(MenuName, ItemName, "on")
+					try Menu, MenuBar, Add, % MenuName, % ":" . MenuName
+					LodaPlugin.MenuButtons.Icon("MenuBar", MenuName, "PD")
+				}
+			}
+
+			Twitch(poo, MenuBind)
+			{
+				TwitchPDCount := 0, TwitchPD := "", TwitchChannel := ""
+
+				HTML := poo.document.getElementsByClassName(ParsePos["TwitchPos"])[0]
+
+				while HTML.getElementsByClassName(ParsePos["TwitchPD"])[A_Index-1].innerText {
+					Name_Red := HTML.getElementsByClassName("red")[A_Index-1].innerText 
+					Name_Blue := HTML.getElementsByClassName(ParsePos["TwitchPD"])[A_Index-1].innerText
+					TwitchPD .= Name_Red . Name_Blue "`n"
+					TwitchPDCount := A_Index
 				}
 
-				try Menu, MenuBar, Add, % each, % ":" . each
-				LodaPlugin.MenuButtons.Icon("MenuBar", each, "PD")
+				Loop, % TwitchPDCount * 2 {
+					If !( HTML.GetElementsByTagName("a")[A_Index-1].title )
+						continue
+					TwitchChannel .= HTML.GetElementsByTagName("a")[A_Index-1].title "`n" ; 트위치 방송명
+				}
+
+				TwitchPDCount := 0
+				Loop, Parse, TwitchPD, `n, `r
+					PDName%A_Index% := A_LoopField
+
+				Loop, Parse, TwitchChannel, `n, `r
+				{
+					ChannelName%A_Index% := A_LoopField
+					TwitchPDCount := A_Index-1
+				}
+
+				Loop, % TwitchPDCount
+				{
+					PD 		:= PDName%A_Index%
+					Banner 		:= ChannelName%A_index%
+					ItemName 	:= PD . "`t" . Banner
+					try Menu, TwitchMenu, Add, % ItemName, % MenuBind
+					LodaPlugin.MenuButtons.Icon("TwitchMenu", ItemName, "on")
+				}
+
+				try Menu, MenuBar, Add, 트위치:방송, % ":TwitchMenu"
+				LodaPlugin.MenuButtons.Icon("MenuBar", "트위치:방송", "Twitch")
 			}
-		}
-
-		Twitch(poo, MenuBind)
-		{
-			TwitchPDCount := 0, TwitchPD := "", TwitchChannel := ""
-			Cut1 := jXon.parse.Cut1
-			Cut2 := jXon.parse.Cut2
-			HTML := this.HTML
-
-			Twitch := SubStr(poo, InStr(poo, Cut1))
-			Twitch := SubStr(Twitch, 1, InStr(Twitch, Cut2) - 1)
-			this.WriteHTML(HTML, Twitch)
-
-			while HTML.getElementsByClassName("deepblue")[A_Index-1].innerText {
-				Name_Red := HTML.getElementsByClassName("red")[A_Index-1].innerText 
-				Name_Blue := HTML.getElementsByClassName("deepblue")[A_Index-1].innerText
-				TwitchPD .= Name_Red . Name_Blue "`n"
-				TwitchPDCount := A_Index
-			}
-
-			Loop, % TwitchPDCount * 2 {
-				if !( HTML.GetElementsByTagName("a")[A_Index-1].title )
-					continue
-				TwitchChannel .= HTML.GetElementsByTagName("a")[A_Index-1].title "`n" ; 트위치 방송명
-			}
-
-			TwitchPDCount := 0
-			Loop, Parse, TwitchPD, `n, `r
-				PDName%A_Index% := A_LoopField
-
-			Loop, Parse, TwitchChannel, `n, `r
-			{
-				ChannelName%A_Index% := A_LoopField
-				TwitchPDCount := A_Index-1
-			}
-
-			Loop, % TwitchPDCount
-			{
-				PD 		:= PDName%A_Index%
-				Banner 		:= ChannelName%A_index%
-				ItemName 	:= PD . "`t" . Banner
-				try Menu, TwitchMenu, Add, % ItemName, % MenuBind
-				LodaPlugin.MenuButtons.Icon("TwitchMenu", ItemName, "on")
-			}
-
-			try Menu, MenuBar, Add, 트위치:방송, % ":TwitchMenu"
-			LodaPlugin.MenuButtons.Icon("MenuBar", "트위치:방송", "Twitch")
 		}
 	}
-}
