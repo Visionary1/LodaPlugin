@@ -14,9 +14,10 @@
 
 Entry.As("User")
 global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
-global pVersion		:= "0.1.3"
+global pVersion		:= "0.2"
 global RsrcPath 	:= A_Temp . "\LodaPlugin\"
-global jXon		:= JSON.Load("https://goo.gl/7KhJiP",, True)
+global jXon		:= JSON.Load("https://goo.gl/z0b7GM",, True)
+global PositionPD 	:= jXon.parse["Position_PD"], PositionTitle := jXon.parse["Position_Title"]
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin()
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
@@ -176,6 +177,7 @@ class LodaPlugin
 
 		Streamup(PDName, Self)
 		{
+			/*
 			PDName 	:= jXon.LiveHouseIn[PDName]
 			If (PDName = "rongsports")
 				this.StreamURL 	:= "https://video-cdn.streamup.com/app/rongsportss-channel/playlist.m3u8"
@@ -184,6 +186,9 @@ class LodaPlugin
 			Else
 				this.StreamURL 	:= "https://video-cdn.streamup.com/app/" . PDName . "s-stream/playlist.m3u8"
 			this.ChatURL 		:= "https://streamup.com/" . PDName . "/embeds/chatonly"
+			*/
+			this.StreamURL 	:= jXon[PDName]["m3u8"]
+			this.ChatURL 	:= jXon[PDName]["chat"]
 		}
 
 		Twitch(PDName)
@@ -545,10 +550,10 @@ class LodaPlugin
 			{
 				this.WriteHTML( HTML, pooHash.Item(each) )
 
-				while HTML.getElementsByClassName("deepblue pull-left")[A_Index-1].innerText
+				while HTML.getElementsByClassName(PositionPD)[A_Index-1].innerText
 				{
-					PD		:= HTML.getElementsByClassName("deepblue pull-left")[A_Index-1].innerText
-					Banner		:= HTML.getElementsByClassName("ellipsis")[A_Index-1].innerText
+					PD		:= HTML.getElementsByClassName(PositionPD)[A_Index-1].innerText
+					Banner		:= HTML.getElementsByClassName(PositionTitle)[A_Index-1].innerText
 					MenuName	:= each
 					ItemName	:= PD . "`t" . Banner
 
