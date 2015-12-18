@@ -36,10 +36,12 @@
 	
 	__Delete() 
 	{
-		OnMessage(0x100, this.Bound.OnMessage, 0)
-		this.Delete("Bound")
-		WinEvents.Unregister(this.hMain)
-		Gui, % this.hMain . ": Destroy"
+		Try {
+			OnMessage(0x100, this.Bound.OnMessage, 0)
+			this.Delete("Bound")
+			WinEvents.Unregister(this.hMain)
+			Gui, % this.hMain . ": Destroy"
+		}
 	}
 	
 	OnMessage(wParam, lParam, Msg, hWnd) 
