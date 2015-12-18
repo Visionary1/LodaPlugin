@@ -117,8 +117,8 @@ class LodaPlugin
 	{
 		Critical
 		__GaGa := ""
-		try WinKill, % "ahk_id " . this.PotPlayer["Hwnd"]
-		try WinKill, % "ahk_id " . this.Docking
+		Try WinKill, % "ahk_id " . this.PotPlayer["Hwnd"]
+		Try WinKill, % "ahk_id " . this.Docking
 		TVClose(this.hPlugin, 40, 100)
 		For Each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage, 0)
@@ -148,7 +148,7 @@ class LodaPlugin
 				Menus.Push(SubMenus*)
 				Ref := ":" . SubMenus[1]
 			}
-			try Menu, % Menus[1], Add, % Item[1], % Ref
+			Try Menu, % Menus[1], Add, % Item[1], % Ref
 		}
 
 		Return Menus
@@ -315,7 +315,7 @@ class LodaPlugin
 		{
 			Call(Self, MenuName, ItemName, ico)
 			{
-				try Menu, % MenuName, Icon, % ItemName, % RsrcPath . ico . ".png",, 0
+				Try Menu, % MenuName, Icon, % ItemName, % RsrcPath . ico . ".png",, 0
 				Sleep, 50
 			}
 		}
@@ -333,7 +333,7 @@ class LodaPlugin
 			{
 				this.UseStreamTimeShift()
 
-				try Run, % this.GetPath() . "\PotPlayer" . this.isMini . this.is64 . ".exe",,, TargetPID
+				Try Run, % this.GetPath() . "\PotPlayer" . this.isMini . this.is64 . ".exe",,, TargetPID
 				catch {
 					MsgBox, 262192, 이런!, 팟플레이어가 설치되지 않은 것 같아요`n설치후에 다시 실행해주세요!, 5
 					ExitApp
@@ -409,7 +409,7 @@ class LodaPlugin
 		Talk(ChatURL, ChatMethod)
 		{
 			If (ChatMethod != "Docking") && !(ChatMethod == "")
-			try Run, % this.Parent.ChatMethod . " " . ChatURL
+				Try Run, % this.Parent.ChatMethod . " " . ChatURL
 			Else If (ChatMethod == "Docking") {
 				ClipHistory 	:= Clipboard
 				Clipboard 	:= ChatURL
@@ -471,29 +471,31 @@ class LodaPlugin
 
 		Complete(File) 
 		{
-			try Run, % A_ScriptDir . "\" . File
+			Try Run, % A_ScriptDir . "\" . File
 			ExitApp
 		}
 	}
 
 	class Parser extends Functor
 	{
-		static HTML := ComObjCreate("HTMLfile") ;pooHash := ComObjCreate("Scripting.Dictionary")
+		; static HTML := ComObjCreate("HTMLfile"), pooHash := ComObjCreate("Scripting.Dictionary")
 
 		Call(Self, Option := "New", MenuBind := "")
 		{
 			if (Option == "Refresh") {
 				Gui, Menu
 				For each, Item in ["영화:방송", "애니:방송", "예능:방송", "기타:방송", "TwitchMenu"]
-					try Menu, % Item, Delete,
+					Try Menu, % Item, Delete,
 				} Else If (Option == "New") {
 					this.isLatest()
 				}
 
-				poo := this.DOM("http://poooo.ml/")
+				poo := this.DOM("http://poooo.ml/", True)
 				this.LiveHouseIn(poo, MenuBind)
 				this.Twitch(poo, MenuBind)
-				poo.Quit(), poo := ""
+				poo.Quit()
+				Try WinKill, % "ahk_id" . poo.Hwnd ;Kill remaining obj
+				poo := ""
 
 				if (Option == "Refresh") {
 					Gui, Menu, MenuBar
@@ -543,11 +545,11 @@ class LodaPlugin
 							Sleep, 50
 						}
 
-						try Menu, % MenuName, Add, % ItemName, % MenuBind
+						Try Menu, % MenuName, Add, % ItemName, % MenuBind
 						LodaPlugin.MenuButtons.Icon(MenuName, ItemName, "on")
 					}
 
-					try Menu, MenuBar, Add, % MenuName, % ":" . MenuName
+					Try Menu, MenuBar, Add, % MenuName, % ":" . MenuName
 					LodaPlugin.MenuButtons.Icon("MenuBar", MenuName, "PD")
 				}
 			}
@@ -586,11 +588,11 @@ class LodaPlugin
 					PD 		:= PDName%A_Index%
 					Banner 		:= ChannelName%A_index%
 					ItemName 	:= PD . "`t" . Banner
-					try Menu, TwitchMenu, Add, % ItemName, % MenuBind
+					Try Menu, TwitchMenu, Add, % ItemName, % MenuBind
 					LodaPlugin.MenuButtons.Icon("TwitchMenu", ItemName, "on")
 				}
 
-				try Menu, MenuBar, Add, 트위치:방송, % ":TwitchMenu"
+				Try Menu, MenuBar, Add, 트위치:방송, % ":TwitchMenu"
 				LodaPlugin.MenuButtons.Icon("MenuBar", "트위치:방송", "Twitch")
 			}
 		}
