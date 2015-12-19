@@ -84,8 +84,8 @@
         "chat": "https://streamup.com/popha/embeds/chatonly"
     },
     "롱스포츠": {
-        "m3u8": "https://hi.cdn.livehouse.in/329050/video/playlist.m3u8",
-        "chat": "https://livehouse.in/en/channel/329050/chatroom"
+        "m3u8": "https://video-cdn.streamup.com/app/rongsportss-channel/playlist.m3u8",
+        "chat": "https://streamup.com/rongsports/embeds/chatonly"
     },
     "PD Bara": {
         "m3u8": "https://video-cdn.streamup.com/app/pdbaras-stream/playlist.m3u8",
