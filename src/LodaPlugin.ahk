@@ -10,6 +10,7 @@
 #Include <TVClose>
 #Include <Thread>
 #Include <Install>
+#Include <DaumPotPlayer>
 #Include <Entry>
 
 Entry.As("User")
@@ -53,6 +54,24 @@ Class LodaPlugin
 		this.Parser("New", this.Bound.PDMenu)
 		this.Bound.OnMessage 	:= this.OnMessage.Bind(this)
 		Buttons			:= new this.MenuButtons(this)
+		Menus 			:= 
+		(Join
+			[
+				["채팅창 열기", [
+				["익스플로러 사용", Buttons.IE.Bind(Buttons)],
+				["파이어폭스 사용", Buttons.FireFox.Bind(Buttons)],
+				["크롬 사용", Buttons.Chrome.Bind(Buttons)],
+				["채팅창 도킹", Buttons.Docking.Bind(Buttons)]
+			]], ["라이브하우스 주소", [
+				["기본", Buttons.ChangeServer.Bind(Buttons)],
+				["주소2", Buttons.ChangeServer.Bind(Buttons)],
+				["주소3", Buttons.ChangeServer.Bind(Buttons)],
+				["주소4", Buttons.ChangeServer.Bind(Buttons)]
+			]], ["다음팟 광고차단", Buttons.AdBlock.Bind(Buttons)]
+			, 	["About", Buttons.About.Bind(Buttons)]
+			]
+		)
+		/*
 		If InStr(A_ScriptName, "개발자") {
 			Menus := 
 			(Join
@@ -89,6 +108,7 @@ Class LodaPlugin
 			]
 			)
 		}
+		*/
 		this.Menus		:= this.CreateMenuBar(Menus)
 		Menu, MenuBar, Add, % "설정", % ":" . this.Menus[1]
 		this.MenuButtons.Icon("MenuBar", "설정", "setting")
@@ -104,7 +124,7 @@ Class LodaPlugin
 		For Each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage)
 		__Noti.Destroy()
-		this.PotPlayer		:= this.DaumPotPlayer.Run()
+		this.PotPlayer		:= DaumPotPlayer.Run()
 		;this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"]) ;PID 아니였어? ㅋㅋ
 		this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["Hwnd"])
 		this.HookAddr		:= RegisterCallback("HookProc", 0, 3)
@@ -132,7 +152,7 @@ Class LodaPlugin
 	GuiClose()
 	{
 		Critical
-		If FileExist(RsrcPath . "hosts") && InStr(A_ScriptName, "개발자") {
+		If FileExist(RsrcPath . "hosts") {
 			FileRead, Backup, % RsrcPath . "hosts"
 			FileOpen("C:\Windows\System32\Drivers\etc\hosts", "w", "UTF-8").Write(Backup).Close()
 		}
@@ -185,7 +205,7 @@ Class LodaPlugin
 
 				If !(_PDName) {
 					new MsgBox("로다 플러그인", "아직 방송주소가 서버에 추가되지 않았습니다"
-					, "추가되기 전까지는 수동으로 입장해주세요`n`n금방 추가됩니다!", "확인", "YELLOW", this.Parent.PotPlayer["Hwnd"])
+					, "추가되기 전까지는 수동으로 입장해주세요`n`n금방 추가됩니다!", "확인", "YELLOW", Self.PotPlayer["Hwnd"])
 					Return
 				}
 
@@ -371,50 +391,6 @@ Class LodaPlugin
 			{
 				Try Menu, % MenuName, Icon, % ItemName, % RsrcPath . ico . ".png",, 0
 				Sleep, 50
-			}
-		}
-	}
-	
-	Class DaumPotPlayer
-	{
-		Class Run extends Functor
-		{
-			static is64	:= InStr(A_ScriptName, "64") ? "64" : ""
-			, isMini	:= InStr(A_ScriptName, "Mini") ? "Mini" : ""
-			
-			Call(Self)
-			{
-				this.UseStreamTimeShift()
-				
-				Try Run, % this.GetPath() . "\PotPlayer" . this.isMini . this.is64 . ".exe",,, TargetPID
-				catch {
-					MsgBox, 262192, 이런!, 팟플레이어가 설치되지 않은 것 같아요`n설치후에 다시 실행해주세요!, 5
-					ExitApp
-				}
-				WinWaitActive, % "ahk_pid " . TargetPID
-				Return {"Hwnd": WinExist("ahk_pid" . TargetPID), "PID": TargetPID}
-			}
-			
-			GetPath()
-			{
-				RegRead, PotPlayerPath, HKCU, % "SOFTWARE\DAUM\PotPlayer" . this.is64, ProgramFolder
-				If !ErrorLevel
-					Return PotPlayerPath
-				Else {
-					FileSelectFile, PotPlayerPath,, C:\, 팟플레이어 파일을 선택하세요, *.exe
-					MsgBox, 4132, 로다 플러그인, %PotPlayerPath% `n`n팟플레이어가 맞습니까?
-					IfMsgBox, No
-						this.GetPath()
-					Return PotPlayerPath
-				}
-			}
-			
-			UseStreamTimeShift() 
-			{
-				RegWrite, REG_DWORD, HKCU
-				, % "SOFTWARE\DAUM\PotPlayer" . this.isMini . this.is64 . "\Settings", UseStreamTimeShift, 1
-				RegWrite, REG_DWORD, HKCU
-				, % "SOFTWARE\DAUM\PotPlayer" . this.isMini . this.is64 . "\Settings", StreamTimeShiftTime, 10
 			}
 		}
 	}

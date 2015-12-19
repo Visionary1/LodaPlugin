@@ -29,7 +29,7 @@ Class Entry
 	
 	Common() 
 	{
-		#NoEnv ;커스텀 오토핫키에서 Default 설정으로 바꿈
+		#NoEnv ;Changed to Default for new AutoHotkey v2
 		#SingleInstance Off
 		SetKeyDelay, 20, 10
 		SetWinDelay, 0
