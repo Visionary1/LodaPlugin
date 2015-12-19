@@ -537,11 +537,13 @@ Class LodaPlugin
 			}
 		}
 		
-		DOM(url, isVisible := False)
+		DOM(url)
 		{
-			Obj := ComObjCreate("InternetExplorer.Application"), Obj.Visible := isVisible, Obj.Navigate(url)
+			Obj := ComObjCreate("InternetExplorer.Application")
+			Obj.Visible := False
+			Obj.Navigate(url)
 			While Obj.readyState != 4 || Obj.document.readyState != "complete"
-				Sleep, 30
+				Sleep, 100
 			
 			Return Obj
 		}
