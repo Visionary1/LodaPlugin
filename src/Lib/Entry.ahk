@@ -1,21 +1,35 @@
 ﻿;@Ahk2Exe-SetName 로다 플러그인
 ;@Ahk2Exe-SetDescription 팟플레이어 플러그인
-;@Ahk2Exe-SetVersion 0.3
+;@Ahk2Exe-SetVersion 0.3.2
 ;@Ahk2Exe-SetCopyright Copyright (c) 2015`, 로다 &예지력
 ;@Ahk2Exe-SetOrigFileName 로다 플러그인
 ;@Ahk2Exe-SetCompanyName Copyright (c) 2015`, 로다 &예지력
-class Entry
+Class Entry
 {
-	As(Type) 
+	As(Type := "User")
 	{
+		this.Admin()
 		this.Common()
-		Next := ObjBindMethod(this, Type)
-		%Next%()
+		If (Type == "User")
+			this.User()
+		Else If (Type == "Dev")
+			this.Dev()
+	}
+
+	Admin()
+	{
+		If !(A_IsAdmin) {
+			If (A_IsCompiled)
+				DllCall("shell32\ShellExecute" . (A_IsUnicode ? "" :"A"), (A_PtrSize=8 ? "Ptr" : "UInt"), 0, "Str", "RunAs", "Str", A_ScriptFullPath, "Str", "" , "Str", A_WorkingDir, "Int", 1)
+			Else
+				DllCall("shell32\ShellExecute" . (A_IsUnicode ? "" :"A"), (A_PtrSize=8 ? "Ptr" : "UInt"), 0, "Str", "RunAs", "Str", A_AhkPath, "Str", """" . A_ScriptFullPath . """" . A_Space . "", "Str", A_WorkingDir, "Int", 1)
+			ExitApp
+		}
 	}
 	
 	Common() 
 	{
-		;#NoEnv ;커스텀 오토핫키에서 Default 설정으로 바꿈
+		#NoEnv ;커스텀 오토핫키에서 Default 설정으로 바꿈
 		#SingleInstance Off
 		SetKeyDelay, 20, 10
 		SetWinDelay, 0
