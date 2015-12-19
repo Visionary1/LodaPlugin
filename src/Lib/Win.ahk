@@ -1,20 +1,20 @@
-﻿class Win
+﻿Class Win
 {
 	Activate(Hwnd)
 	{
-		WinActivate, % hWnd
-		WinWaitActive, % hWnd
+		WinActivate, % Hwnd
+		WinWaitActive, % Hwnd
 	}
 
 	Top(Hwnd)
 	{
-		WinSet, AlwaysOnTop, On, % hWnd
-		WinSet, AlwaysOnTop, Off, % hWnd
+		WinSet, AlwaysOnTop, On, % Hwnd
+		WinSet, AlwaysOnTop, Off, % Hwnd
 	}
 
 	Destruct(Hwnd, Parent) 
 	{
-		if !WinExist(Hwnd)
+		If !WinExist(Hwnd)
 			Parent.GuiClose()
 	}
 
@@ -25,7 +25,7 @@
 		s := (s == "") ? 255 : s
 		WinSet,Transparent,% s,% w
 		i := (s<t) ? abs(i) : -1*abs(i)
-		while (k := (i<0) ? (s>t) : (s<t) && WinExist(w)) {
+		While (k := (i<0) ? (s>t) : (s<t) && WinExist(w)) {
 			WinGet, s, Transparent, % w
 			s+=i
 			WinSet, Transparent, % s, % w
@@ -35,16 +35,16 @@
 
 	Hover(Hwnd)
 	{
-		static Save := true
+		static Save := True
 
 		MouseGetPos,,, OnWin
-		if ( hWnd = OnWin ) && (Save = false) {
+		If ( Hwnd = OnWin ) && (Save = False) {
 			Save := !Save
-			;ControlFocus,, % "ahk_id" . Hwnd
-			this.Fade("ahk_id " . hWnd, 255, 15)
-		} else if ( hWnd != OnWin ) && (Save != false) {
+			ControlFocus,, % "ahk_id" . Hwnd
+			this.Fade("ahk_id " . Hwnd, 255, 15)
+		} Else If ( Hwnd != OnWin ) && (Save != False) {
 			Save := !Save
-			this.Fade("ahk_id " . hWnd, 125, 5)
+			this.Fade("ahk_id " . Hwnd, 125, 5)
 		}
 	}
 }
