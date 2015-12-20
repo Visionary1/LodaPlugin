@@ -47,17 +47,25 @@ global ParsePos 	:= {"PD": jXon.parse["Position_PD"]
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin()
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
-__Main.RegisterCloseCallback(Func("CloseCallback"))
+__Main.RegisterCloseCallback( Func("Destruction") )
 Win.Activate("ahk_id " . __Main.hPlugin)
 Return
 
-CloseCallback(__Main) {
+Destruction() {
+	Win.Kill(__Main.PotPlayer["Hwnd"], __Main.Docking)
+	If FileExist(RsrcPath . "hosts") {
+		FileRead, Backup, % RsrcPath . "hosts"
+		FileRead, Recent, C:\Windows\System32\Drivers\etc\hosts
+		If (Backup != Recent)
+			FileOpen("C:\Windows\System32\Drivers\etc\hosts", "w", "UTF-8").Write(Backup).Close()
+	}
+	
 	ExitApp
 }
 
 Terminate() {
 	If WinExist("ahk_id " . __Noti.hNotify)
-		CloseCallback(__Main)
+		Destruction()
 	Else
 		__Main.GuiClose()
 }
