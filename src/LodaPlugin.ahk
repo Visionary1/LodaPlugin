@@ -1,19 +1,4 @@
-﻿#Include <Functor>
-#Include <CBrowser>
-#Include <CleanNotify>
-#Include <CMsgBox>
-#Include <JSON>
-#Include <CInput>
-#Include <CWinEvents>
-#Include <Win>
-#Include <SetWinEventHook>
-#Include <TVClose>
-#Include <Thread>
-#Include <Install>
-#Include <DaumPotPlayer>
-#Include <Entry>
-
-Entry.As("User")
+﻿Entry.As("User")
 global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
 global pVersion		:= "0.3.2"
 global RsrcPath 	:= A_Temp . "\LodaPlugin\"
@@ -618,3 +603,18 @@ Class LodaPlugin
 		}
 	}
 }
+
+#Include <Functor>
+#Include <CBrowser>
+#Include <CleanNotify>
+#Include <CMsgBox>
+#Include <JSON>
+#Include <CInput>
+#Include <CWinEvents>
+#Include <Win>
+#Include <SetWinEventHook>
+#Include <TVClose>
+#Include <Thread>
+#Include <Install>
+#Include <DaumPotPlayer>
+#Include <Entry>
