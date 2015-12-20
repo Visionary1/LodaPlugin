@@ -108,7 +108,6 @@
 	
 	GuiClose()
 	{
-		Critical
 		DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
 		If FileExist(RsrcPath . "hosts") {
 			FileRead, Backup, % RsrcPath . "hosts"
@@ -120,7 +119,7 @@
 			OnMessage(Item, this.Bound.OnMessage, 0)
 		this.Delete("Bound")
 		WinEvents.Unregister(this.hPlugin)
-		TVClose(this.hPlugin, 40, 300)
+		TVClose(this.hPlugin, 40, 120)
 		Gui, Destroy
 		this.CloseCallback()
 	}

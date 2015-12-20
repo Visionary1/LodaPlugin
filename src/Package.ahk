@@ -1,6 +1,6 @@
 ﻿;@Ahk2Exe-SetName 로다 플러그인
 ;@Ahk2Exe-SetDescription 팟플레이어 플러그인
-;@Ahk2Exe-SetVersion 0.3.3
+;@Ahk2Exe-SetVersion 0.3.4
 ;@Ahk2Exe-SetCopyright Copyright (c) 2015`, 로다 &예지력
 ;@Ahk2Exe-SetOrigFileName 로다 플러그인
 ;@Ahk2Exe-SetCompanyName Copyright (c) 2015`, 로다 &예지력
@@ -37,7 +37,7 @@ If !FileExist(A_Temp . "\LodaPlugin\PD.png") {
 }
 
 global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
-global pVersion		:= "0.3.3"
+global pVersion		:= "0.3.4"
 global RsrcPath 	:= A_Temp . "\LodaPlugin\"
 global jXon		:= JSON.Load("https://goo.gl/z0b7GM",, True)
 global ParsePos 	:= {"PD": jXon.parse["Position_PD"]
