@@ -355,7 +355,7 @@
 	{
 		static Interval := 30
 		, isMini 	:= InStr(A_ScriptName, "Mini") ? True : False
-		, is64 		:= InStr(A_ScriptName, "64") ? "Button6" : "Button7"
+		, is64 		:= InStr(A_ScriptName, "64") ? "Button7" : "Button7"
 		
 		__New(Parent)
 		{
