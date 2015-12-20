@@ -125,14 +125,14 @@ Class LodaPlugin
 			OnMessage(Item, this.Bound.OnMessage)
 		__Noti.Destroy()
 		this.PotPlayer		:= DaumPotPlayer.Run()
-		;this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["PID"]) ;PID 아니였어? ㅋㅋ
-		this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["Hwnd"])
+		;this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["Hwnd"])
+		ThreadID 		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["Hwnd"], "Int", 0)
 		this.HookAddr		:= RegisterCallback("HookProc", 0, 3)
 		this.Event		:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
-		, this.HookAddr, this.PotPlayer["PID"], this.ThreadID, 0)
+		, this.HookAddr, this.PotPlayer["PID"], ThreadID, 0)
 		WinGetPos, pX, pY,,, % "ahk_id " . this.PotPlayer["Hwnd"]
 		Gui, Show, % "x" pX " y" pY - 71 " w" 430 "h " 15, % "로다 플러그인 " . pVersion
-		Win.Activate("ahk_id" . this.hPlugin)
+		Win.Top("ahk_id" . this.hPlugin)
 		
 		this.Bound.Hover.Start(100)
 		this.Bound.Parser.Start( 10 * 60 * 1000 )
@@ -156,14 +156,15 @@ Class LodaPlugin
 			FileRead, Backup, % RsrcPath . "hosts"
 			FileOpen("C:\Windows\System32\Drivers\etc\hosts", "w", "UTF-8").Write(Backup).Close()
 		}
+		Win.Kill(this.PotPlayer["Hwnd"], this.Docking)
 		__GaGa.__Delete(), this.Bound.Hover.Destroy(), this.Bound.Parser.Destroy()
-		TVClose(this.hPlugin, 40, 100)
-		Try WinKill, % "ahk_id " . this.PotPlayer["Hwnd"]
-		Try WinKill, % "ahk_id " . this.Docking
 		For Each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage, 0)
 		this.Delete("Bound")
 		WinEvents.Unregister(this.hPlugin)
+		TVClose(this.hPlugin, 100, 500)
+		;TVClose(this.PotPlayer["Hwnd"], 40, 100)
+		;TVClose(this.Docking, 10, 10)
 		Gui, Destroy
 		DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
 		this.CloseCallback()
@@ -425,15 +426,14 @@ Class LodaPlugin
 		
 		PotPlayer(StreamURL)
 		{
-			Input.Send("{Ctrl Down}u{Ctrl Up}", this.Parent.PotPlayer["Hwnd"],, True), Work := ""
+			Input.Send("{Ctrl Down}u{Ctrl Up}", this.Parent.PotPlayer["Hwnd"], True), Work := ""
 			While !Work
 				Work := WinActive("ahk_class #32770", "주소 열기")
 			WinSet, Transparent, 0, % "ahk_id " . Work
 			
 			Holding := ""
 			While !Holding {
-				Win.Activate("ahk_id " . Work)
-				Input.Click("Button2", Work) ;목록삭제
+				Input.Click("Button2", Work, True) ;목록삭제
 				Sleep, % this.Interval
 				ControlSetText, Edit1, % StreamURL, % "ahk_id " . Work  ; 주소
 				Sleep, % this.Interval
@@ -450,9 +450,9 @@ Class LodaPlugin
 			Else If (ChatMethod == "Docking") {
 				ClipHistory 	:= Clipboard
 				Clipboard 	:= ChatURL
-				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking,, True)
-				Input.Send("{Ctrl Down}v{Ctrl Up}", this.Parent.Docking,, False)
-				Input.Send("{Enter Down}{Enter Up}", this.Parent.Docking,, False)
+				Input.Send("{F6 Down}{F6 Up}", this.Parent.Docking, True)
+				Input.Send("{Ctrl Down}v{Ctrl Up}", this.Parent.Docking)
+				Input.Send("{Enter Down}{Enter Up}", this.Parent.Docking)
 				Clipboard 	:= ClipHistory
 			}
 		}
@@ -528,9 +528,7 @@ Class LodaPlugin
 			poo := this.DOM("http://poooo.ml/")
 			this.LiveHouseIn(poo, MenuBind)
 			this.Twitch(poo, MenuBind)
-			poo.Quit()
-			Try WinKill, % "ahk_id" . poo.Hwnd ;Kill remaining proc
-			poo := ""
+			poo.Quit(), Win.Kill(poo.Hwnd), poo := ""
 			
 			If (Option == "Refresh") {
 				Gui, Menu, MenuBar
@@ -597,7 +595,7 @@ Class LodaPlugin
 			
 			HTML := poo.document.getElementsByClassName(ParsePos["TwitchPos"])[0]
 			
-			while HTML.getElementsByClassName(ParsePos["TwitchPD"])[A_Index-1].innerText {
+			While HTML.getElementsByClassName(ParsePos["TwitchPD"])[A_Index-1].innerText {
 				Name_Red := HTML.getElementsByClassName("red")[A_Index-1].innerText 
 				Name_Blue := HTML.getElementsByClassName(ParsePos["TwitchPD"])[A_Index-1].innerText
 				TwitchPD .= Name_Red . Name_Blue "`n"
@@ -606,7 +604,7 @@ Class LodaPlugin
 			
 			Loop, % TwitchPDCount * 2 {
 				If !( HTML.GetElementsByTagName("a")[A_Index-1].title )
-					continue
+					Continue
 				TwitchChannel .= HTML.GetElementsByTagName("a")[A_Index-1].title "`n" ; 트위치 방송명
 			}
 			

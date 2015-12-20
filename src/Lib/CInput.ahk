@@ -1,16 +1,20 @@
 class Input
 {
-	Send(Sends, To, Tick := 50, Focus := False) 
+	Send(Sends, Hwnd, Focus := False) 
 	{
-		if (Focus = true)
-			Win.Activate("ahk_id" . To)
-			;ControlFocus,, % "ahk_id " . To
-		ControlSend, ahk_parent, % Sends, % "ahk_id " . To
-		Sleep,% Tick
+		If (Focus)
+			Win.Activate("ahk_id" . Hwnd)
+			;ControlFocus,, % "ahk_id " . Hwnd
+		;ControlSend, ahk_parent, % Sends, % "ahk_id " . Hwnd
+		SendInput, % Sends
+		Sleep, 50
 	}
 	
-	Click(Control, To) 
+	Click(Control, Hwnd, Focus := False) 
 	{
-		ControlClick, % Control, % "ahk_id " . To,,,, NA
+		If (Focus)
+			Win.Activate("ahk_id " . Hwnd)
+
+		ControlClick, % Control, % "ahk_id " . Hwnd,,,, NA
 	}
 }

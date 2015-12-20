@@ -18,6 +18,12 @@
 			Parent.GuiClose()
 	}
 
+	Kill(Hwnd*)
+	{
+		For Key, Value in Hwnd
+			WinKill, % "ahk_id " . Value
+	}
+
 	Fade(w := "", t := 128, i := 1, d := 5) 
 	{
 		t := (t >= 255) ? 255 : (t < 0) ? 0 : t
