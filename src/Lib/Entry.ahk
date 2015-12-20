@@ -54,3 +54,18 @@ Class Entry
 		;#Warn
 	}
 }
+
+CloseCallback(__Main) {
+	ExitApp
+}
+
+Terminate() {
+	If WinExist("ahk_id " . __Noti.hNotify)
+		CloseCallback(__Main)
+	Else
+		__Main.GuiClose()
+}
+
+ShowGa() {
+	__GaGa.Show()
+}

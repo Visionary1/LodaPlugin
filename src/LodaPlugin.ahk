@@ -25,21 +25,9 @@ global ParsePos 	:= {"PD": jXon.parse["Position_PD"]
 global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애드온`n" , (A_ScreenWidth / 3) + 10, (A_ScreenHeight / 6) - 10, "vc hc", "P")
 global __Main		:= new LodaPlugin()
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
-__Main.RegisterCloseCallback(Func("__Destruct"))
+__Main.RegisterCloseCallback(Func("CloseCallback"))
 Win.Activate("ahk_id " . __Main.hPlugin)
 Return
-
-__Destruct(__Main) {
-	ExitApp
-}
-
-ShowGa() {
-	__GaGa.Show()
-}
-
-Terminate() {
-	__Main.GuiClose()
-}
 
 Class LodaPlugin 
 {
@@ -152,6 +140,7 @@ Class LodaPlugin
 	GuiClose()
 	{
 		Critical
+		DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
 		If FileExist(RsrcPath . "hosts") {
 			FileRead, Backup, % RsrcPath . "hosts"
 			FileOpen("C:\Windows\System32\Drivers\etc\hosts", "w", "UTF-8").Write(Backup).Close()
@@ -162,11 +151,8 @@ Class LodaPlugin
 			OnMessage(Item, this.Bound.OnMessage, 0)
 		this.Delete("Bound")
 		WinEvents.Unregister(this.hPlugin)
-		TVClose(this.hPlugin, 100, 500)
-		;TVClose(this.PotPlayer["Hwnd"], 40, 100)
-		;TVClose(this.Docking, 10, 10)
+		TVClose(this.hPlugin, 40, 300)
 		Gui, Destroy
-		DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
 		this.CloseCallback()
 	}
 	
