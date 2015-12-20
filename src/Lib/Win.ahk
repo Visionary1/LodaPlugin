@@ -41,7 +41,7 @@
 
 	Hover(Hwnd)
 	{
-		static Save := True
+		static Save := False
 
 		MouseGetPos,,, OnWin
 		If ( Hwnd = OnWin ) && (Save = False) {

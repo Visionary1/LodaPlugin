@@ -26,6 +26,7 @@ global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애�
 global __Main		:= new LodaPlugin()
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
 __Main.RegisterCloseCallback(Func("__Destruct"))
+Win.Activate("ahk_id " . __Main.hPlugin)
 Return
 
 __Destruct(__Main) {
@@ -132,8 +133,7 @@ Class LodaPlugin
 		, this.HookAddr, this.PotPlayer["PID"], ThreadID, 0)
 		WinGetPos, pX, pY,,, % "ahk_id " . this.PotPlayer["Hwnd"]
 		Gui, Show, % "x" pX " y" pY - 71 " w" 430 "h " 15, % "로다 플러그인 " . pVersion
-		Win.Top("ahk_id" . this.hPlugin)
-		
+
 		this.Bound.Hover.Start(100)
 		this.Bound.Parser.Start( 10 * 60 * 1000 )
 	}
