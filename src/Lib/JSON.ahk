@@ -1,6 +1,6 @@
-class JSON ;Credits coco
+Class JSON ;Credits coco
 {
-	class Load extends JSON.Functor
+	Class Load extends JSON.Functor
 	{
 		Call(self, text, reviver:="", FromWeb := False)
 		{
@@ -169,7 +169,7 @@ class JSON ;Credits coco
 		}
 	}
 	
-	class Get extends Functor
+	Class Get extends Functor
 	{
 		Call(Self, url, Async := false) 
 		{
@@ -179,7 +179,7 @@ class JSON ;Credits coco
 		}
 	}
 
-	class Functor
+	Class Functor
 	{
 		__Call(method, args*)
 		{

@@ -1,6 +1,6 @@
 ﻿;@Ahk2Exe-SetName 로다 플러그인
 ;@Ahk2Exe-SetDescription 팟플레이어 플러그인
-;@Ahk2Exe-SetVersion 0.3.4
+;@Ahk2Exe-SetVersion 0.3.5
 ;@Ahk2Exe-SetCopyright Copyright (c) 2015`, 로다 &예지력
 ;@Ahk2Exe-SetOrigFileName 로다 플러그인
 ;@Ahk2Exe-SetCompanyName Copyright (c) 2015`, 로다 &예지력
@@ -17,7 +17,6 @@ If !(A_IsAdmin) {
 
 FileCreateDir, % A_Temp . "\LodaPlugin\"
 FileInstall, Resource\Resource.zip, % A_Temp . "\LodaPlugin\LodaPlugin.zip"
-#NoEnv ;Changed to Default for new AutoHotkey v2
 #SingleInstance Off
 #KeyHistory 0
 SetKeyDelay, 20, 10
@@ -39,7 +38,7 @@ If !FileExist(A_Temp . "\LodaPlugin\PD.png") {
 }
 
 global Resizer 		:= DynaCall("MoveWindow", ["tiiiii", 1, 2, 3, 4, 5], _dHwnd := "", _dX := "", _dY := "", _dW := "", _dH := "", True)
-global pVersion		:= "0.3.4"
+global pVersion		:= "0.3.5"
 global RsrcPath 	:= A_Temp . "\LodaPlugin\"
 global jXon		:= JSON.Load("https://goo.gl/z0b7GM",, True)
 global ParsePos 	:= {"PD": jXon.parse["Position_PD"]
@@ -55,8 +54,7 @@ Return
 
 Destruction() {
 	Critical
-	Win.Kill(__Main.PotPlayer["Hwnd"], __Main.Docking)
-	
+
 	If FileExist(RsrcPath . "hosts") {
 		FileRead, Backup, % RsrcPath . "hosts"
 		FileRead, Recent, C:\Windows\System32\Drivers\etc\hosts
@@ -71,7 +69,7 @@ Terminate() {
 	If WinExist("ahk_id " . __Noti.hNotify)
 		Destruction()
 	Else
-		__Main.GuiClose()
+		Win.Kill(__Main.PotPlayer["Hwnd"])
 }
 
 ShowGa() {

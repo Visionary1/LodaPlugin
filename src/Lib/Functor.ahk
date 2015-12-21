@@ -1,8 +1,8 @@
-﻿class Functor
+﻿Class Functor
 {
 	__Call(Method, args*)
 	{
-		if IsObject(Method) || (Method == "")
+		If IsObject(Method) || (Method == "")
 			Return Method ? this.Call(Method, args*) : this.Call(args*)
 	}
 }

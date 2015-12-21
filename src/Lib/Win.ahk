@@ -2,26 +2,32 @@
 {
 	Activate(Hwnd)
 	{
-		WinActivate, % Hwnd
-		WinWaitActive, % Hwnd
+		WinActivate, % "ahk_id " . Hwnd
+		WinWaitActive, % "ahk_id " . Hwnd
 	}
 
-	Top(Hwnd)
+	Top(Hwnds*)
 	{
-		WinSet, AlwaysOnTop, On, % Hwnd
-		WinSet, AlwaysOnTop, Off, % Hwnd
+		For k, Hwnd in Hwnds
+		{
+			If WinExist("ahk_id " . Hwnd) {
+				WinSet, AlwaysOnTop, On, % "ahk_id " . Hwnd
+				WinSet, AlwaysOnTop, Off, % "ahk_id " . Hwnd
+			}
+		}
 	}
-
+	/*
 	Destruct(Hwnd, Parent) 
 	{
 		If !WinExist(Hwnd)
 			Parent.GuiClose()
 	}
+	*/
 
-	Kill(Hwnd*)
+	Kill(Hwnds*)
 	{
-		For Key, Value in Hwnd
-			WinKill, % "ahk_id " . Value
+		For k, Hwnd in Hwnds
+			WinKill, % "ahk_id " . Hwnd
 	}
 
 	Fade(w := "", t := 128, i := 1, d := 5) 

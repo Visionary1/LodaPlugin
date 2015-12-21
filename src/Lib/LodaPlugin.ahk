@@ -100,7 +100,7 @@
 		static WM_WINDOWPOSCHANGED := 0x0047
 		
 		If (Msg = WM_WINDOWPOSCHANGED) && !WinActive("가가라이브 채팅") && !WinActive("ahk_id " . this.PotPlayer["Hwnd"]) {
-			Win.Top("ahk_id " . this.PotPlayer["Hwnd"])
+			Win.Top(this.PotPlayer["Hwnd"])
 			WinGetPos, iX, iY,,, % "ahk_id " . this.hPlugin
 			WinMove, % "ahk_id " . this.PotPlayer["Hwnd"],, % iX, % iY + 66
 		}
@@ -108,13 +108,12 @@
 	
 	GuiClose()
 	{
-		DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
-		__GaGa.__Delete(), this.Bound.Hover.Destroy(), this.Bound.Parser.Destroy()
+		;DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
+		this.Bound.Hover.Destroy(), this.Bound.Parser.Destroy()
 		For Each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage, 0)
 		this.Delete("Bound")
 		WinEvents.Unregister(this.hPlugin)
-		TVClose(this.hPlugin, 40, 120)
 		Gui, Destroy
 		this.CloseCallback()
 	}

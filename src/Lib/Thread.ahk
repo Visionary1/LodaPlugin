@@ -14,7 +14,7 @@
 	Call() 
 	{
 		this.Bind.Call()
-		if (this.Period < 0)
+		If (this.Period < 0)
 			this.Destroy()
 	}
 	
