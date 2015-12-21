@@ -5,6 +5,7 @@
 ;@Ahk2Exe-SetOrigFileName 로다 플러그인
 ;@Ahk2Exe-SetCompanyName Copyright (c) 2015`, 로다 &예지력
 
+/*
 If !(A_IsAdmin) {
 	If (A_IsCompiled)
 		DllCall("shell32\ShellExecute" . (A_IsUnicode ? "" :"A"), (A_PtrSize=8 ? "Ptr" : "UInt"), 0, "Str", "RunAs", "Str", A_ScriptFullPath, "Str", "" , "Str", A_WorkingDir, "Int", 1)
@@ -12,6 +13,7 @@ If !(A_IsAdmin) {
 		DllCall("shell32\ShellExecute" . (A_IsUnicode ? "" :"A"), (A_PtrSize=8 ? "Ptr" : "UInt"), 0, "Str", "RunAs", "Str", A_AhkPath, "Str", """" . A_ScriptFullPath . """" . A_Space . "", "Str", A_WorkingDir, "Int", 1)
 	ExitApp
 }
+*/
 
 FileCreateDir, % A_Temp . "\LodaPlugin\"
 FileInstall, Resource\Resource.zip, % A_Temp . "\LodaPlugin\LodaPlugin.zip"
@@ -52,7 +54,9 @@ Win.Activate("ahk_id " . __Main.hPlugin)
 Return
 
 Destruction() {
+	Critical
 	Win.Kill(__Main.PotPlayer["Hwnd"], __Main.Docking)
+	
 	If FileExist(RsrcPath . "hosts") {
 		FileRead, Backup, % RsrcPath . "hosts"
 		FileRead, Recent, C:\Windows\System32\Drivers\etc\hosts

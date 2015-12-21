@@ -108,7 +108,6 @@
 	
 	GuiClose()
 	{
-		Critical
 		DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
 		__GaGa.__Delete(), this.Bound.Hover.Destroy(), this.Bound.Parser.Destroy()
 		For Each, Item in [0x0047]

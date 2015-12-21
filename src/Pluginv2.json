@@ -95,6 +95,10 @@
         "m3u8": "https://video-cdn.streamup.com/app/pdbaras-stream/playlist.m3u8",
         "chat": "https://streamup.com/pdbara/embeds/chatonly"
     },
+    "FOX&Tails TV": {
+        "m3u8": "https://video-cdn.streamup.com/app/foxtailspots-stream/playlist.m3u8",
+        "chat": "https://streamup.com/foxtailspot/embeds/chatonly"
+    },
     "대전꼬꼬마": "391890",
     "sorum": "390469",
     "암내공격둘리": "322231",
@@ -118,7 +122,6 @@
     "팟수의한국영화": "318146",
     "고퀄리티": "323005",
     "거북TV": "324804",
-    "FOX&Tails TV": "318870",
     "THOMTV": "318288",
     "미르": "318493",
     "보리": "322383",
