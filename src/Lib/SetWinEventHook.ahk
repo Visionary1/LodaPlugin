@@ -4,7 +4,7 @@
 	
 	If (Event = EVENT_OBJECT_FOCUS) ; when PotPlayer is activated
 	{
-		Win.Top(__Main.hPlugin, __Main.Docking)
+		Return Win.Top(__Main.hPlugin, __Main.Docking)
 	}
 	
 	Else If (Event = EVENT_OBJECT_DESTROY) && !WinExist("ahk_id " . __Main.PotPlayer["Hwnd"])
@@ -13,7 +13,7 @@
 		TVClose(this.hPlugin, 40, 120)
 		__GaGa.__Delete()
 		Win.Kill(__Main.Docking)
-		__Main.GuiClose()
+		Return __Main.GuiClose()
 		;Win.Destruct("ahk_id " . __Main.PotPlayer["Hwnd"], __Main) ; need to check since it fires too often
 	}
 	

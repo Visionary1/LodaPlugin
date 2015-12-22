@@ -5,16 +5,6 @@
 ;@Ahk2Exe-SetOrigFileName 로다 플러그인
 ;@Ahk2Exe-SetCompanyName Copyright (c) 2015`, 로다 &예지력
 
-/*
-If !(A_IsAdmin) {
-	If (A_IsCompiled)
-		DllCall("shell32\ShellExecute" . (A_IsUnicode ? "" :"A"), (A_PtrSize=8 ? "Ptr" : "UInt"), 0, "Str", "RunAs", "Str", A_ScriptFullPath, "Str", "" , "Str", A_WorkingDir, "Int", 1)
-	Else
-		DllCall("shell32\ShellExecute" . (A_IsUnicode ? "" :"A"), (A_PtrSize=8 ? "Ptr" : "UInt"), 0, "Str", "RunAs", "Str", A_AhkPath, "Str", """" . A_ScriptFullPath . """" . A_Space . "", "Str", A_WorkingDir, "Int", 1)
-	ExitApp
-}
-*/
-
 FileCreateDir, % A_Temp . "\LodaPlugin\"
 FileInstall, Resource\Resource.zip, % A_Temp . "\LodaPlugin\LodaPlugin.zip"
 #SingleInstance Off
