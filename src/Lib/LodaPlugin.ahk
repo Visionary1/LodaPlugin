@@ -85,7 +85,7 @@
 		this.PotPlayer		:= DaumPotPlayer.Run()
 		;this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["Hwnd"])
 		ThreadID 		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["Hwnd"], "Int", 0)
-		this.HookAddr		:= RegisterCallback("HookProc", 0, 3)
+		this.HookAddr		:= RegisterCallback("HookProc")
 		this.Event		:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
 		, this.HookAddr, this.PotPlayer["PID"], ThreadID, 0)
 		WinGetPos, pX, pY,,, % "ahk_id " . this.PotPlayer["Hwnd"]
@@ -108,7 +108,6 @@
 	
 	GuiClose()
 	{
-		;DllCall("GlobalFree", "Ptr", this.HookAddr, "Ptr")
 		this.Bound.Hover.Destroy(), this.Bound.Parser.Destroy()
 		For Each, Item in [0x0047]
 			OnMessage(Item, this.Bound.OnMessage, 0)
@@ -543,7 +542,8 @@
 			
 			HTML := poo.document.getElementsByClassName(ParsePos["TwitchPos"])[0]
 			
-			While HTML.getElementsByClassName(ParsePos["TwitchPD"])[A_Index-1].innerText {
+			While HTML.getElementsByClassName(ParsePos["TwitchPD"])[A_Index-1].innerText 
+			{
 				Name_Red := HTML.getElementsByClassName("red")[A_Index-1].innerText 
 				Name_Blue := HTML.getElementsByClassName(ParsePos["TwitchPD"])[A_Index-1].innerText
 				TwitchPD .= Name_Red . Name_Blue "`n"

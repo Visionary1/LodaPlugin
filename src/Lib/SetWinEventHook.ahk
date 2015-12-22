@@ -9,6 +9,7 @@
 	
 	Else If (Event = EVENT_OBJECT_DESTROY) && !WinExist("ahk_id " . __Main.PotPlayer["Hwnd"])
 	{
+		DllCall("UnhookWinEvent", "Ptr", __Main.Event)
 		DllCall("GlobalFree", "Ptr", __Main.HookAddr, "Ptr")
 		TVClose(this.hPlugin, 40, 120)
 		__GaGa.__Delete()
@@ -24,7 +25,7 @@
 
 		Resizer.(__Main.hPlugin, hX, hY - 66, hW, cH)
 		;DllCall("MoveWindow", "Ptr", __Main.hPlugin, "Int", hX, "Int", hY - 66, "Int", hW, "Int", cH, "Int", true)
-		If __Main.Docking
+		If (__Main.Docking)
 			Resizer.(__Main.Docking, hX + hW + 5, hY - 66, 400, hH + 66)
 			;DllCall("MoveWindow", "Ptr", __Main.Docking, "Int", hX + hW + 5, "Int", hY - 66, "Int", 400, "Int", hH + 66, "Int", true)
 	}
@@ -32,6 +33,6 @@
 
 SetWinEventHook(eventMin, eventMax, hmodWinEventProc, lpfnWinEventProc, idProcess, idThread, dwFlags) 
 { 
-	DllCall("CoInitialize", "UInt", 0) 
-	Return DllCall("SetWinEventHook", "UInt", eventMin, "UInt", eventMax, "UInt", hmodWinEventProc, "UInt", lpfnWinEventProc, "UInt", idProcess, "UInt", idThread, "UInt", dwFlags) 
+	DllCall("CoInitialize", "Ptr", 0)
+	Return DllCall("SetWinEventHook", "UInt", eventMin, "UInt", eventMax, "Ptr", hmodWinEventProc, "Ptr", lpfnWinEventProc, "UInt", idProcess, "UInt", idThread, "UInt", dwFlags) 
 }
