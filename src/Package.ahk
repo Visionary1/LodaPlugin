@@ -39,7 +39,7 @@ global __Noti 		:= new CleanNotify("로다 플러그인", "팟플레이어 애�
 global __Main		:= new LodaPlugin()
 global __GaGa 		:= new Browser("가가라이브 채팅", "http://goo.gl/zlBZPF")
 __Main.RegisterCloseCallback(Func("Destruction"))
-Win.Top("ahk_id " . __Main.hPlugin)
+Win.Activate("ahk_id " . __Main.hPlugin)
 Return
 
 Destruction() {
