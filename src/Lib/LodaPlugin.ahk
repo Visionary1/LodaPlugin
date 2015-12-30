@@ -29,44 +29,6 @@
 			, 	["About", Buttons.About.Bind(Buttons)]
 			]
 		)
-		/*
-		If InStr(A_ScriptName, "개발자") {
-			Menus := 
-			(Join
-			[
-				["채팅창 열기", [
-					["익스플로러 사용", Buttons.IE.Bind(Buttons)],
-					["파이어폭스 사용", Buttons.FireFox.Bind(Buttons)],
-					["크롬 사용", Buttons.Chrome.Bind(Buttons)],
-					["채팅창 도킹", Buttons.Docking.Bind(Buttons)]
-				]], ["라이브하우스 주소", [
-					["기본", Buttons.ChangeServer.Bind(Buttons)],
-					["주소2", Buttons.ChangeServer.Bind(Buttons)],
-					["주소3", Buttons.ChangeServer.Bind(Buttons)],
-					["주소4", Buttons.ChangeServer.Bind(Buttons)]
-				]], ["다음팟 광고차단", Buttons.AdBlock.Bind(Buttons)]
-				, 	["About", Buttons.About.Bind(Buttons)]
-				]
-			)
-		} Else {
-			Menus := 
-			(Join
-			[
-				["채팅창 열기", [
-					["익스플로러 사용", Buttons.IE.Bind(Buttons)],
-					["파이어폭스 사용", Buttons.FireFox.Bind(Buttons)],
-					["크롬 사용", Buttons.Chrome.Bind(Buttons)],
-					["채팅창 도킹", Buttons.Docking.Bind(Buttons)]
-				]], ["라이브하우스 주소", [
-					["기본", Buttons.ChangeServer.Bind(Buttons)],
-					["주소2", Buttons.ChangeServer.Bind(Buttons)],
-					["주소3", Buttons.ChangeServer.Bind(Buttons)],
-					["주소4", Buttons.ChangeServer.Bind(Buttons)]
-				]], ["About", Buttons.About.Bind(Buttons)]
-			]
-			)
-		}
-		*/
 		this.Menus		:= this.CreateMenuBar(Menus)
 		Menu, MenuBar, Add, % "설정", % ":" . this.Menus[1]
 		this.MenuButtons.Icon("MenuBar", "설정", "setting")
@@ -152,9 +114,8 @@
 				_PDName := jXon[PDName]
 
 				If !(_PDName) {
-					new MsgBox("로다 플러그인", "아직 방송주소가 서버에 추가되지 않았습니다"
+					Return new MsgBox("로다 플러그인", "아직 방송주소가 서버에 추가되지 않았습니다"
 					, "추가되기 전까지는 수동으로 입장해주세요`n`n금방 추가됩니다!", "확인", "YELLOW", Self.PotPlayer["Hwnd"])
-					Return
 				}
 
 				If _PDName is not Integer
@@ -338,7 +299,7 @@
 			Call(Self, MenuName, ItemName, ico)
 			{
 				Try Menu, % MenuName, Icon, % ItemName, % RsrcPath . ico . ".png",, 0
-				Sleep, 50
+				;Sleep, 20
 			}
 		}
 	}
@@ -484,12 +445,20 @@
 		
 		DOM(url)
 		{
-			Obj := ComObjCreate("InternetExplorer.Application")
-			Obj.Visible := False
-			Obj.Navigate(url)
-			While Obj.readyState != 4 || Obj.document.readyState != "complete"
-				Sleep, 100
-			
+			Obj := ComObjCreate("InternetExplorer.Application"), Obj.Visible := False, Obj.Navigate(url)
+			StartTime := A_TickCount
+
+			Loop, 
+			{
+				If (Obj.readyState = 4) || (Obj.document.readyState = "complete")
+					Break
+				Else If (A_TickCount - StartTime) > 10000
+				{
+					Obj.Quit(), Obj := ""
+					Return this.DOM()
+				}
+			}
+
 			Return Obj
 		}
 		

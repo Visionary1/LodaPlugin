@@ -56,7 +56,7 @@
 			this.Fade("ahk_id " . Hwnd, 255, 15)
 		} Else If ( Hwnd != OnWin ) && (Save != False) {
 			Save := !Save
-			this.Fade("ahk_id " . Hwnd, 125, 5)
+			this.Fade("ahk_id " . Hwnd, 150, 5)
 		}
 	}
 }
