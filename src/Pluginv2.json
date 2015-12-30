@@ -81,11 +81,11 @@
     },
     "해보라기": {
         "m3u8": "https://video-cdn.streamup.com/app/haeboragis-stream/playlist.m3u8",
-        "chat": "https://streamup.com/HAEBORAGI/embeds/chatonly"
+        "chat": "https://livehouse.in/en/channel/391272/chatroom"
     },
     "이리도": {
         "m3u8": "https://video-cdn.streamup.com/app/eridos-stream/playlist.m3u8",
-        "chat": "https://livehouse.in/en/channel/391272/chatroom"
+        "chat": "https://streamup.com/erido/embeds/chatonly"
     },
     "나비": {
         "m3u8": "https://video-cdn.streamup.com/app/navys-stream/playlist.m3u8",
