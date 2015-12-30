@@ -1,36 +1,141 @@
 /*
-	Identity by HTML5 UP
-	html5up.net | @n33co
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+	Cogent by Pixelarity
+	pixelarity.com @pixelarity
+	License: pixelarity.com/license
 */
+
+/* Basic */
+
+	hr {
+		border-bottom: solid 1px #efefef;
+	}
+
+	blockquote {
+		border-left: solid 4px #efefef;
+	}
+
+	code {
+		border: solid 1px #efefef;
+	}
+
+/* Form */
+
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	select,
+	textarea {
+		border: solid 1px #efefef;
+		position: relative;
+		-ms-behavior: url("assets/js/ie/PIE.htc");
+	}
+
+/* Box */
+
+	.box {
+		position: relative;
+		-ms-behavior: url("assets/js/ie/PIE.htc");
+	}
+
+/* Image */
+
+	.image img {
+		position: relative;
+		-ms-behavior: url("assets/js/ie/PIE.htc");
+	}
 
 /* List */
 
-	ul.icons li a {
-		-ms-behavior: url("assets/js/PIE.htc");
+	ul.alt li {
+		border-top: solid 1px #efefef;
 	}
 
-		ul.icons li a:before {
-			text-align: center;
-			font-size: 26px;
-		}
+/* Table */
 
-/* Main */
-
-	#main {
-		-ms-behavior: url("assets/js/PIE.htc");
+	.table-wrapper {
+		-webkit-overflow-scrolling: touch;
+		overflow-x: auto;
 	}
 
-		#main .avatar img {
-			-ms-behavior: url("assets/js/PIE.htc");
-		}
-
-/* Footer */
-
-	#footer {
-		color: #fff;
+	table tbody tr {
+		border: solid 1px #efefef;
 	}
 
-		#footer .copyright li {
-			border-left: solid 1px #fff;
+	table thead {
+		border-bottom: solid 2px #efefef;
+	}
+
+	table tfoot {
+		border-top: solid 2px #efefef;
+	}
+
+	table.alt tbody tr td {
+		border: solid 1px #efefef;
+		border-left-width: 0;
+		border-top-width: 0;
+	}
+
+/* Button */
+
+	input[type="submit"],
+	input[type="reset"],
+	input[type="button"],
+	button,
+	.button {
+		position: relative;
+		-ms-behavior: url("assets/js/ie/PIE.htc");
+	}
+
+		input[type="submit"].alt,
+		input[type="reset"].alt,
+		input[type="button"].alt,
+		button.alt,
+		.button.alt {
+			border: solid 2px #efefef;
 		}
+
+		input[type="submit"].special,
+		input[type="reset"].special,
+		input[type="button"].special,
+		button.special,
+		.button.special {
+			border: 0;
+		}
+
+/* Spotlight */
+
+	.spotlight .image img {
+		position: relative;
+		-ms-behavior: url("assets/js/ie/PIE.htc");
+	}
+
+/* Plans */
+
+	.plan {
+		position: relative;
+		-ms-behavior: url("assets/js/ie/PIE.htc");
+	}
+
+/* Browser Mockup */
+
+	.browser-mockup .chrome {
+		display: none;
+	}
+
+/* Header */
+
+	#header {
+		border-bottom: solid 1px #efefef;
+	}
+
+	.dropotron {
+		border: solid 1px #efefef;
+	}
+
+		.dropotron.level-0 {
+			margin-top: 0;
+		}
+
+			.dropotron.level-0:before {
+				display: none;
+			}

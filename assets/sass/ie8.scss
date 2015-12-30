@@ -4,48 +4,160 @@
 @import 'libs/skel';
 
 /*
-	Identity by HTML5 UP
-	html5up.net | @n33co
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+	Cogent by Pixelarity
+	pixelarity.com @pixelarity
+	License: pixelarity.com/license
 */
+
+$color-border:	#efefef;
+$color-border2:	#dfdfdf;
+
+/* Basic */
+
+	hr {
+		border-bottom: solid 1px $color-border;
+	}
+
+	blockquote {
+		border-left: solid 4px $color-border;
+	}
+
+	code {
+		border: solid 1px $color-border;
+	}
+
+/* Form */
+
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	select,
+	textarea {
+		border: solid 1px $color-border;
+		position: relative;
+		-ms-behavior: url('assets/js/ie/PIE.htc');
+	}
+
+/* Box */
+
+	.box {
+		position: relative;
+		-ms-behavior: url('assets/js/ie/PIE.htc');
+	}
+
+/* Image */
+
+	.image {
+		img {
+			position: relative;
+			-ms-behavior: url('assets/js/ie/PIE.htc');
+		}
+	}
 
 /* List */
 
 	ul {
-		&.icons {
+		&.alt {
 			li {
-				a {
-					-ms-behavior: url('assets/js/PIE.htc');
+				border-top: solid 1px $color-border;
+			}
+		}
+	}
 
-					&:before {
-						text-align: center;
-						font-size: 26px;
+/* Table */
+
+	.table-wrapper {
+		-webkit-overflow-scrolling: touch;
+		overflow-x: auto;
+	}
+
+	table {
+		tbody {
+			tr {
+				border: solid 1px $color-border;
+			}
+		}
+
+		thead {
+			border-bottom: solid 2px $color-border;
+		}
+
+		tfoot {
+			border-top: solid 2px $color-border;
+		}
+
+		&.alt {
+			tbody {
+				tr {
+					td {
+						border: solid 1px $color-border;
+						border-left-width: 0;
+						border-top-width: 0;
 					}
 				}
 			}
 		}
 	}
 
-/* Main */
+/* Button */
 
-	#main {
-		-ms-behavior: url('assets/js/PIE.htc');
+	input[type="submit"],
+	input[type="reset"],
+	input[type="button"],
+	button,
+	.button {
+		position: relative;
+		-ms-behavior: url('assets/js/ie/PIE.htc');
 
-		.avatar {
+		&.alt {
+			border: solid 2px $color-border;
+		}
+
+		&.special {
+			border: 0;
+		}
+	}
+
+/* Spotlight */
+
+	.spotlight {
+		.image {
 			img {
-				-ms-behavior: url('assets/js/PIE.htc');
+				position: relative;
+				-ms-behavior: url('assets/js/ie/PIE.htc');
 			}
 		}
 	}
 
-/* Footer */
+/* Plans */
 
-	#footer {
-		color: #fff;
+	.plan {
+		position: relative;
+		-ms-behavior: url('assets/js/ie/PIE.htc');
+	}
 
-		.copyright {
-			li {
-				border-left: solid 1px #fff;
+/* Browser Mockup */
+
+	.browser-mockup {
+		.chrome {
+			display: none;
+		}
+	}
+
+/* Header */
+
+	#header {
+		border-bottom: solid 1px $color-border;
+	}
+
+	.dropotron {
+		border: solid 1px $color-border;
+
+		&.level-0 {
+			margin-top: 0;
+
+			&:before {
+				display: none;
 			}
 		}
 	}
