@@ -13,7 +13,7 @@
     },
     "사공TV": {
         "m3u8": "https://video-cdn.streamup.com/app/sagongs-stream/playlist.m3u8",
-        "chat": "https://streamup.com/SaGong/embeds/chatonly"
+        "chat": "https://livehouse.in/en/channel/345602/chatroom"
     },
     "(HD) Han Tv": {
         "m3u8": "https://video-cdn.streamup.com/app/dannyhans-stream/playlist.m3u8",
@@ -113,7 +113,7 @@
     },
     "PD Bara": {
         "m3u8": "https://video-cdn.streamup.com/app/pdbaras-stream/playlist.m3u8",
-        "chat": "https://streamup.com/pdbara/embeds/chatonly"
+        "chat": "https://livehouse.in/en/channel/391814/chatroom"
     },
     "FOX&Tails TV": {
         "m3u8": "https://video-cdn.streamup.com/app/foxtailspots-stream/playlist.m3u8",
