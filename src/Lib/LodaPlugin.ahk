@@ -45,7 +45,6 @@
 			OnMessage(Item, this.Bound.OnMessage)
 		__Noti.Destroy()
 		this.PotPlayer		:= DaumPotPlayer.Run()
-		;this.ThreadID		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["Hwnd"])
 		ThreadID 		:= DllCall("GetWindowThreadProcessId", "Ptr", this.PotPlayer["Hwnd"], "Int", 0)
 		this.HookAddr		:= RegisterCallback("HookProc")
 		this.Event		:= SetWinEventHook(EVENT_OBJECT_DESTROY := 0x8001, EVENT_OBJECT_LOCATIONCHANGE := 0x800B, 0
@@ -450,9 +449,11 @@
 
 			Loop, 
 			{
+				Limiter := A_TickCount - StartTime
+				
 				If (Obj.readyState = 4) || (Obj.document.readyState = "complete")
 					Break
-				Else If (A_TickCount - StartTime) > 10000
+				Else If (Limiter > 10000)
 				{
 					Obj.Quit(), Obj := ""
 					Return this.DOM()

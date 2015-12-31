@@ -27,7 +27,8 @@
 				FileSelectFile, PotPlayerPath,, C:\, 팟플레이어 파일을 선택하세요, *.exe
 				MsgBox, 4132, 로다 플러그인, %PotPlayerPath% `n`n팟플레이어가 맞습니까?
 				IfMsgBox, No
-					this.GetPath()
+					Return this.GetPath()
+					
 				Return PotPlayerPath
 			}
 		}

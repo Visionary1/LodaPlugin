@@ -11,10 +11,10 @@
 	{
 		DllCall("UnhookWinEvent", "Ptr", __Main.Event)
 		DllCall("GlobalFree", "Ptr", __Main.HookAddr, "Ptr")
-		TVClose(this.hPlugin, 40, 120)
+		;TVClose(__Main.hPlugin, 40, 120)
 		__GaGa.__Delete()
 		Win.Kill(__Main.Docking)
-		Return __Main.GuiClose()
+		__Main.GuiClose()
 		;Win.Destruct("ahk_id " . __Main.PotPlayer["Hwnd"], __Main) ; need to check since it fires too often
 	}
 	
