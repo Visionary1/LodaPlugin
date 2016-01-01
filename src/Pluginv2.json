@@ -1,4 +1,8 @@
 {
+     "고라파덕": {
+        "m3u8": "https://video-cdn.streamup.com/app/mrboguss-stream/playlist.m3u8",
+        "chat": "https://livehouse.in/en/channel/399510/chatroom"
+    },
      "reve": {
         "m3u8": "https://video-cdn.streamup.com/app/reves-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/346894/chatroom"
