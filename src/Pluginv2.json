@@ -13,7 +13,7 @@
     },
     "NiceTV": {
         "m3u8": "https://video-cdn.streamup.com/app/aimhighs-stream/playlist.m3u8",
-        "chat": "https://streamup.com/aimhigh/embeds/chatonly"
+        "chat": "https://livehouse.in/en/channel/323847/chatroom"
     },
     "DannaKhan": {
         "m3u8": "https://video-cdn.streamup.com/app/dannakhans-stream/playlist.m3u8",
@@ -61,7 +61,7 @@
     },
     "푸른용": {
         "m3u8": "https://video-cdn.streamup.com/app/kap2020s-stream/playlist.m3u8",
-        "chat": "https://streamup.com/BLUE-DRAGON/embeds/chatonly"
+        "chat": "https://livehouse.in/en/channel/318532/chatroom"
     },
     "망둥어": {
         "m3u8": "https://video-cdn.streamup.com/app/mangdoongs-stream/playlist.m3u8",
