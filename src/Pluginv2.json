@@ -1,4 +1,8 @@
 {
+     "Namsan": {
+        "m3u8": "https://video-cdn.streamup.com/app/capicths-stream/playlist.m3u8",
+        "chat": "https://livehouse.in/en/channel/351812/chatroom"
+    },
      "고라파덕": {
         "m3u8": "https://video-cdn.streamup.com/app/mrboguss-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/399510/chatroom"
@@ -81,7 +85,7 @@
     },
     "아라라기상": {
         "m3u8": "https://video-cdn.streamup.com/app/araragi_tvs-stream/playlist.m3u8",
-        "chat": "https://streamup.com/araragi_tv/embeds/chatonly"
+        "chat": "https://livehouse.in/en/channel/387415/chatroom"
     },
     "붕달": {
         "m3u8": "https://video-cdn.streamup.com/app/boong-dal59s-stream/playlist.m3u8",
