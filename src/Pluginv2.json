@@ -96,7 +96,7 @@
         "chat": "https://livehouse.in/en/channel/387415/chatroom"
     },
     "붕달": {
-        "m3u8": "https://video-cdn.streamup.com/app/boong-dal59s-stream/playlist.m3u8",
+        "m3u8": "http://chromecast.afreeca.gscdn.com/livestream-19/auth_playlist.m3u8?aid=.A32.7bbT56vyHM9fKZk.TdXvG30E4P9neZjJD9RFu8kDJfswf4q1H5Q5GMqrdZeOFP3KcQsG9K77ILGE5CcOJHZqM_EsoMZgFMOvdB1TA7hL8M8IGwMXdsHLbx32qUA",
         "chat": "https://livehouse.in/en/channel/377797/chatroom"
     },
     "해보라기": {
