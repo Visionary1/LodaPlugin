@@ -445,20 +445,8 @@
 		DOM(url)
 		{
 			Obj := ComObjCreate("InternetExplorer.Application"), Obj.Visible := False, Obj.Navigate(url)
-			StartTime := A_TickCount
-
-			Loop, 
-			{
-				Limiter := A_TickCount - StartTime
-				
-				If (Obj.readyState = 4) || (Obj.document.readyState = "complete")
-					Break
-				Else If (Limiter > 10000)
-				{
-					Obj.Quit(), Obj := ""
-					Return this.DOM()
-				}
-			}
+			While, Obj.readyState != 4 || Obj.document.readyState != "complete"
+				Sleep, 100
 
 			Return Obj
 		}

@@ -33,6 +33,6 @@
 
 SetWinEventHook(eventMin, eventMax, hmodWinEventProc, lpfnWinEventProc, idProcess, idThread, dwFlags) 
 { 
-	DllCall("CoInitialize", "Ptr", 0)
+	DllCall("CoInitialize", "Int", 0)
 	Return DllCall("SetWinEventHook", "UInt", eventMin, "UInt", eventMax, "Ptr", hmodWinEventProc, "Ptr", lpfnWinEventProc, "UInt", idProcess, "UInt", idThread, "UInt", dwFlags) 
 }
