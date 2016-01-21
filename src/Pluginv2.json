@@ -1,6 +1,6 @@
 {
      "깜순잉": {
-        "m3u8": "https://video-cdn.streamup.com/app/dada119s-stream/playlist.m3u8",
+        "m3u8": "http://edge4.reall.tv:8888/hls/1761/index.m3u8",
         "chat": "https://livehouse.in/en/channel/416127/chatroom"
     },
      "please": {
@@ -68,8 +68,8 @@
         "chat": "https://streamup.com/sim-cheong/embeds/chatonly"
     },
     "구리뱅이": {
-        "m3u8": "https://video-cdn.streamup.com/app/guris-stream/playlist.m3u8",
-        "chat": "https://streamup.com/guri/embeds/chatonly"
+        "m3u8": "https://hi.cdn.livehouse.in/387411/video/playlist.m3u8",
+        "chat": "https://livehouse.in/en/channel/387411/chatroom"
     },
     "푸른용": {
         "m3u8": "https://video-cdn.streamup.com/app/kap2020s-stream/playlist.m3u8",
@@ -84,7 +84,7 @@
         "chat": "https://streamup.com/ALTAVISTA/embeds/chatonly"
     },
     "PD 어둠의볶음밥": {
-        "m3u8": "https://video-cdn.streamup.com/app/rk1109s-stream/playlist.m3u8",
+        "m3u8": "https://video04-lax.streamup.com/app/rk1109s-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/398469/chatroom"
     },
     "하루": {
@@ -100,15 +100,15 @@
         "chat": "https://livehouse.in/en/channel/377797/chatroom"
     },
     "해보라기": {
-        "m3u8": "https://video-cdn.streamup.com/app/haeboragis-stream/playlist.m3u8",
+        "m3u8": "https://video04-lax.streamup.com/app/haeboragis-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/391272/chatroom"
     },
     "이리도": {
-        "m3u8": "https://video-cdn.streamup.com/app/eridos-stream/playlist.m3u8",
+        "m3u8": "http://afreecatvtwuniv-lh.akamaihd.net/i/AfreecaAWSTaiwan_13@391388/master.m3u8",
         "chat": "https://livehouse.in/en/channel/417025/chatroom"
     },
     "NAVY": {
-        "m3u8": "https://video-cdn.streamup.com/app/navyss-stream/playlist.m3u8",
+        "m3u8": "https://video04-lax.streamup.com/app/navyss-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/416566/chatroom"
     },
     "홍삼원": {
@@ -136,7 +136,7 @@
         "chat": "https://livehouse.in/en/channel/391814/chatroom"
     },
     "FOX&Tails TV": {
-        "m3u8": "https://video-cdn.streamup.com/app/foxtailspots-stream/playlist.m3u8",
+        "m3u8": "https://video04-lax.streamup.com/app/foxtailspots-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/394926/chatroom"
     },
     "대전꼬꼬마": "391890",
