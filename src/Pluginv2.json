@@ -1,4 +1,8 @@
 {
+     "흰둥이": {
+        "m3u8": "http://afreecatvtwuniv-lh.akamaihd.net/i/AfreecaAWSTaiwan_14@391685/master.m3u8",
+        "chat": "https://livehouse.in/en/channel/416127/chatroom"
+    },
      "깜순잉": {
         "m3u8": "http://edge4.reall.tv:8888/hls/1761/index.m3u8",
         "chat": "https://livehouse.in/en/channel/416127/chatroom"
@@ -48,7 +52,7 @@
         "chat": "https://streamup.com/gone/embeds/chatonly"
     },
     "팟트라슈": {
-        "m3u8": "https://video-cdn.streamup.com/app/minhos-stream/playlist.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/minhos-stream/playlist.m3u8",
         "chat": "https://streamup.com/partrasu/embeds/chatonly"
     },
     "떠삥맨": {
@@ -80,11 +84,11 @@
         "chat": "https://streamup.com/Mangdoong/embeds/chatonly"
     },
     "알타비스타": {
-        "m3u8": "https://video-cdn.streamup.com/app/altavistas-stream/playlist.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/altavistas-stream/playlist.m3u8",
         "chat": "https://streamup.com/ALTAVISTA/embeds/chatonly"
     },
     "PD 어둠의볶음밥": {
-        "m3u8": "https://video04-lax.streamup.com/app/rk1109s-stream/playlist.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/rk1109s-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/398469/chatroom"
     },
     "하루": {
@@ -92,7 +96,7 @@
         "chat": "https://streamup.com/HARU_TV/embeds/chatonly"
     },
     "아라라기상": {
-        "m3u8": "https://video-cdn.streamup.com/app/araragi_tvs-stream/playlist.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/araragi_tvs-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/387415/chatroom"
     },
     "붕달": {
@@ -116,7 +120,7 @@
         "chat": "https://streamup.com/hong-samone/embeds/chatonly"
     },
     "호,뭐?!심슨!!": {
-        "m3u8": "https://video-cdn.streamup.com/app/homersimpsons-stream/playlist.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/homersimpsons-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/393620/chatroom"
     },
     "이리저리": {
@@ -128,11 +132,11 @@
         "chat": "https://livehouse.in/en/channel/394894/chatroom"
     },
     "롱스포츠": {
-        "m3u8": "https://video-cdn.streamup.com/app/rongsportss-channel/playlist.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/rongsportss-channel/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/399183/chatroom"
     },
     "PD Bara": {
-        "m3u8": "https://video-cdn.streamup.com/app/pdbaras-stream/playlist.m3u8",
+        "m3u8": "https://video04-lax.streamup.com/app/pdbaras-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/391814/chatroom"
     },
     "FOX&Tails TV": {
