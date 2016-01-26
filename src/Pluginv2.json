@@ -1,10 +1,22 @@
 {
+     "flyhack": {
+        "m3u8": "https://video01-tok.streamup.com/app/flyhacks-channel/playlist.m3u8",
+        "chat": "https://livehouse.in/en/channel/317830/chatroom"
+    },
+     "bokik-kim": {
+        "m3u8": "https://video04-lax.streamup.com/app/bokik-kims-channel/playlist.m3u8​",
+        "chat": "https://livehouse.in/en/channel/423102/chatroom"
+    },
+     "Navyss": {
+        "m3u8": "https://video01-tok.streamup.com/app/navysss-stream/playlist.m3u8",
+        "chat": "https://livehouse.in/en/channel/416566/chatroom"
+    },
      "흰둥이": {
-        "m3u8": "http://afreecatvtwuniv-lh.akamaihd.net/i/AfreecaAWSTaiwan_14@391685/master.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/dada119s-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/416127/chatroom"
     },
      "깜순잉": {
-        "m3u8": "http://edge4.reall.tv:8888/hls/1761/index.m3u8",
+        "m3u8": "http://afreecatvtwuniv-lh.akamaihd.net/i/AfreecaAWSTaiwan_14@391685/master.m3u8",
         "chat": "https://livehouse.in/en/channel/416127/chatroom"
     },
      "please": {
@@ -68,11 +80,11 @@
         "chat": "https://streamup.com/kyou/embeds/chatonly"
     },
     "심청이": {
-        "m3u8": "https://video-cdn.streamup.com/app/sim-cheongs-stream/playlist.m3u8",
-        "chat": "https://streamup.com/sim-cheong/embeds/chatonly"
+        "m3u8": "https://video01-tok.streamup.com/app/sim-cheongs-stream/playlist.m3u8",
+        "chat": "https://livehouse.in/en/channel/387423/chatroom"
     },
     "구리뱅이": {
-        "m3u8": "https://hi.cdn.livehouse.in/387411/video/playlist.m3u8",
+        "m3u8": "https://video-cdn.streamup.com/app/guris-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/387411/chatroom"
     },
     "푸른용": {
@@ -80,7 +92,7 @@
         "chat": "https://livehouse.in/en/channel/318532/chatroom"
     },
     "망둥어": {
-        "m3u8": "https://video-cdn.streamup.com/app/mangdoongs-stream/playlist.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/mangdoongs-stream/playlist.m3u8",
         "chat": "https://streamup.com/Mangdoong/embeds/chatonly"
     },
     "알타비스타": {
