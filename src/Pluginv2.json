@@ -1,4 +1,8 @@
 {
+     "장국영": {
+        "m3u8": "https://video01-tok.streamup.com/app/lesliecheungs-stream/playlist.m3u8",
+        "chat": "https://livehouse.in/en/channel/347257/chatroom"
+    },
      "flyhack": {
         "m3u8": "https://video01-tok.streamup.com/app/flyhacks-channel/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/317830/chatroom"
@@ -44,11 +48,11 @@
         "chat": "https://livehouse.in/en/channel/323847/chatroom"
     },
     "DannaKhan": {
-        "m3u8": "https://video-cdn.streamup.com/app/dannakhans-stream/playlist.m3u8",
+        "m3u8": "https://video01-tok.streamup.com/app/dannakhans-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/357881/chatroom"
     },
     "사공TV": {
-        "m3u8": "https://video-cdn.streamup.com/app/sagongs-stream/playlist.m3u8",
+        "m3u8": "https://video04-lax.streamup.com/app/sagongs-stream/playlist.m3u8",
         "chat": "https://livehouse.in/en/channel/345602/chatroom"
     },
     "(HD) Han Tv": {
@@ -160,7 +164,6 @@
     "암내공격둘리": "322231",
     "마스터": "328250",
     "WARP": "318512",
-    "장국영": "322516",
     "존존스": "384035",
     "hansel": "326383",
     "슈가맨": "324542",
